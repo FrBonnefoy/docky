@@ -12,6 +12,7 @@ wget https://github.com/FrBonnefoy/docky/blob/main/small_urls/Dockerfile
 wget https://github.com/FrBonnefoy/docky/blob/main/small_urls/initbook.sh
 sudo docker build -t booking_url . 
 cd ..
+sudo docker pull luminati/luminati-proxy
 sudo docker pull httpd
 sudo docker pull jupyter/datascience-notebook
 sudo docker pull jupyter/tensorflow-notebook
