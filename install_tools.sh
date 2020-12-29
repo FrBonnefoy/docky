@@ -11,8 +11,8 @@ wget https://github.com/FrBonnefoy/docky/blob/main/initbook.sh
 wget https://github.com/FrBonnefoy/docky/blob/main/Dockerfile
 sudo docker build -t booking_url . 
 sudo docker pull httpd
-docker pull jupyter/all-spark-notebook
-docker pull jupyter/tensorflow-notebook
+sudo docker pull jupyter/datascience-notebook
+sudo docker pull jupyter/tensorflow-notebook
 
 #echo 'Finished installation'
 
