@@ -7,6 +7,7 @@ sudo sh get-docker.sh
 sudo usermod -aG docker azureuser
 mkdir booking_small_urls_docker
 mkdir booking_info_docker
+mkdir apache
 cd booking_urls_docker
 wget https://github.com/FrBonnefoy/docky/blob/main/small_urls/Dockerfile
 wget https://github.com/FrBonnefoy/docky/blob/main/small_urls/initbook.sh
