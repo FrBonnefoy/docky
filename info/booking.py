@@ -232,7 +232,7 @@ with open(flogname,"a") as flogfile:
 
 
 with concurrent.futures.ProcessPoolExecutor(max_workers=7) as executor:
-    future_to_url = {executor.submit(bookcrawl, url): url for url in urls}
+    future_to_url = {executor.submit(bookcrawl, url): url for url in url_hotel}
     for future in tqdm(concurrent.futures.as_completed(future_to_url),total=len(future_to_url)):
         url = future_to_url[future]
         try:
