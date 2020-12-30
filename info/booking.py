@@ -9,6 +9,7 @@ import re
 import os
 import json
 import pandas as pd
+import datetime
 
 # Setting up proxy
 
@@ -39,6 +40,7 @@ urls = list(dict.fromkeys(urls))
 timestamp=int(time.time())
 flogname="logs"+str(timestamp)+".txt"
 flogfile = open(flogname,"w", encoding="utf-8")
+now = datetime.datetime.now()
 print (now.strftime("%Y-%m-%d %H:%M:%S"),file=flogfile)
 flogfile.close()
 
