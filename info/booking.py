@@ -2,6 +2,10 @@
 
 # Importing modules
 
+from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import Future
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import concurrent.futures
 import requests
 from bs4 import BeautifulSoup as soup
 import time
