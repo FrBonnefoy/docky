@@ -117,7 +117,12 @@ def bookcrawl(url):
         cleancontent = ""
 
 
-    hname = container.table.a.img["alt"]
+    hname = book_soup.findAll("h2",{"id":"hp_hotel_name"})
+    try:
+        hname=str(hname[0].text.strip())
+        posnewline=hname.find('\n')+1
+        hname=hname[posnewline:]
+
     desc = container.findAll("div", {"class":"hotel_desc"})
     review = container.findAll("div", {"class":"bui-review-score__title"})
     try:
