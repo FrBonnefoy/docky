@@ -14,7 +14,7 @@ wget https://github.com/FrBonnefoy/docky/blob/main/small_urls/initbook.sh
 sudo docker build -t booking_url . 
 cd ..
 sudo docker pull luminati/luminati-proxy
-sudo docker run -d --name luminati --network host luminati/luminati-proxy luminati --daemon
+sudo docker run -dit --name luminati --network host luminati/luminati-proxy luminati
 sudo docker pull httpd
 sudo docker run -d -p 80:80/tcp -v /home/azureuser/apache:/usr/local/apache2/htdocs --name apache httpd
 sudo docker pull jupyter/datascience-notebook
