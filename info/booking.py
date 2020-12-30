@@ -256,7 +256,7 @@ def bookcrawl(url):
 
     with open(fdonename,"a") as f:
         print(url,file=f)
-    print(url)
+    #print(url)
 
 
 print('\n','Fetching individual urls...','\n')
