@@ -83,6 +83,8 @@ fhandle.close()
 
 # Definition of the crawl function
 def bookcrawl(url):
+    with open(flogname,"a") as flogfile:
+        print(url,file=flogfile)
     # Opening webpage and parsing of html
     r=requests.get(url, proxies=proxyDict, verify=False)
     book_soup = soup(r.text, "html.parser")
