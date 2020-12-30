@@ -163,13 +163,13 @@ def bookcrawl(url):
         cleannumreviews = ""
     try:
         type = book_soup.findAll("span", {"class":"hp__hotel-type-badge"})
-        cleantype = type[0].text.strip()
-    except:
-        try:
-            type = book_soup.findAll("span", {"data-exposure-name":"property_tag_hp"})
+        if len(type)>0:
             cleantype = type[0].text.strip()
-        except:
-            cleantype = ""
+        else:
+            type = book_soup.findAll("span", {"class":"bui-badge bh-property-type bh-property-type--constructive-dark"})
+            cleantype = type[0].text.strip()
+    except:
+        cleantype = ""
     try:
         equip = book_soup.findAll("div", {"class":"important_facility"})
         listequip = []
