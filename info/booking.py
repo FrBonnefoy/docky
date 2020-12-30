@@ -1,0 +1,180 @@
+# -*- coding: utf-8 -*-
+
+# Importing modules
+
+import requests
+from bs4 import BeautifulSoup as soup
+import time
+import re
+import os
+import json
+import pandas as pd
+
+# Setting up proxy
+
+http_proxy = "http://127.0.0.1:24000"
+https_proxy = "https://127.0.0.1:24000"
+ftp_proxy = "ftp://127.0.0.1:24000"
+proxyDict = {
+              "http"  : http_proxy,
+              "https" : https_proxy,
+              "ftp"   : ftp_proxy
+            }
+
+# Setting up the list of URLs
+
+#fname = input('\nPlease enter the name of the text file with the Booking URLs\n')
+fname = 'booking_url.txt'
+
+with open(fname) as handle:
+    urls= handle.readlines()
+
+urls = list(dict.fromkeys(urls))
+
+# Setting up of CSV file
+timestamp=int(time.time())
+filename = "booking"+str(timestamp)+".csv"
+fhandle = open(filename,"w", encoding="utf-8")
+headers = "url; name; description; review; score; number of reviews; type of property; address; stars; recommend; descdetail; equip; equipdetail; lat; long; hotelchain; type2\n"
+fhandle.write(headers)
+
+# Definition of the crawl function
+def bookcrawl(url):
+    # Opening webpage and parsing of html
+    r=requests.get(url, proxies=proxyDict)
+    book_soup = soup(r.text, "html.parser")
+
+    #Generate address variable
+    address = book_soup.findAll("span", {"class":"hp_address_subtitle"})
+    try:
+        cleanaddress = address[0].text.strip()
+    except:
+        cleanaddress = ""
+    #Generate stars variable
+    stars = book_soup.findAll("span", {"class":"hp__hotel_ratings__stars nowrap"})
+    try:
+        cleanstars = stars[0].text.strip()
+    except:
+        cleanstars = ""
+
+    #Generate recommendation variable
+    recom = book_soup.findAll("span", {"class":"facility-badge__tooltip-title"})
+    try:
+        cleanrom = recom[0].text.strip()
+    except:
+        cleanrom = ""
+
+    #Generate Property description variable
+    content = book_soup.findAll("div", {"id":"property_description_content"})
+    try:
+        cleancontent = content[0].text.strip().replace("\n"," ").replace(";",",")
+    except:
+        cleancontent = ""
+
+
+    hname = container.table.a.img["alt"]
+    desc = container.findAll("div", {"class":"hotel_desc"})
+    review = container.findAll("div", {"class":"bui-review-score__title"})
+    try:
+        cleandesc = desc[0].text.strip().replace(";",",")
+    except:
+        cleandesc = ""
+    try:
+        cleanreview = review[0].text.strip()
+    except:
+        cleanreview = ""
+    badge = container.findAll("div", {"class":"bui-review-score__badge"})
+    try:
+        cleanbadge = badge[0].text.strip()
+    except:
+        cleanbadge = ""
+    numreviews = container.findAll("div", {"class":"bui-review-score__text"})
+    try:
+        cleannumreviews = numreviews[0].text.strip()
+    except:
+        cleannumreviews = ""
+    try:
+        type = container.findAll("div", {"class":"bui-u-inline"})
+        cleantype = type[0].text.strip()
+    except:
+        cleantype = ""
+    try:
+        equip = book_soup.findAll("div", {"class":"important_facility"})
+        listequip = []
+        for i in range(0,len(equip)):
+            new = equip[i].text.strip().replace('\n','').replace('\r','')
+            listequip.append(new)
+            cleanequip = ','.join(listequip)
+    except:
+        cleanequip = ""
+    try:
+        equip2 = book_soup.findAll("div", {"class":"facilitiesChecklistSection"})
+        listequip2 = []
+        for i in range(0,len(equip2)):
+            new = equip2[i].text.strip().replace('\n',',').replace('\r','')
+            listequip2.append(new)
+        cleanequip2 = ','.join(listequip2)
+        cleanequip2 = replace(cleanequip2,',')
+
+    except:
+        cleanequip2 = ""
+    try:
+        comment = book_soup.findAll("span", {"class":"c-review__body"})
+        listcomment = []
+        for i in range(0,len(comment)):
+            newc = comment[i].text.strip().replace('\n','').replace('\r','')
+            listcomment.append(newc)
+        cleancomment = ','.join(listcomment)
+    except:
+        cleancomment = ""
+
+    poi2 = book_soup.findAll("div", {"class":"hp-poi-list__description"})
+    poi3 = book_soup.findAll("span", {"class":"hp-poi-list__distance"})
+
+    try:
+        listpoi = []
+        for i in range(0,len(poi2)):
+            poi = poi2[i].text.strip().replace('\n','').replace('\r','')+" "+poi3[i].text.strip().replace('\n','').replace('\r','')
+            listpoi.append(poi)
+        cleanpoi = ' , '.join(listpoi)
+    except:
+        cleanpoi = ""
+
+    # Generate location variables
+    try:
+        s=str(book_soup.findAll("a", {"id":"hotel_sidebar_static_map"}))
+        text='data-atlas-latlng'
+        a = s.find(text)
+        e = a+42
+        s2=s[a:e]
+        s3 = re.sub('[^0-9,.]', "" , s2)
+        z=s3.find(",")
+        lat = s3[:z]
+        long = s3[z+1:]
+
+    except:
+        lat=""
+        long=""
+
+    # Generate chain classification variable
+    try:
+        chain = book_soup.findAll("p", {"class":"summary hotel_meta_style"})
+        cleanchain=chain[0].text.strip()
+        schain=str(cleanchain)
+        if schain.find("Chaîne hôtelière/marque:")==-1:
+            schain=""
+        else:
+            xx = schain.find("Chaîne hôtelière/marque:")+len("Chaîne hôtelière/marque:")
+            schain=schain[xx:].strip().replace("\n"," ").replace('\r',"")
+    except:
+        schain=""
+
+
+    # Generate hotel type variable
+    try:
+        hbadge = book_soup.findAll("span", {"class":"hp__hotel-type-badge"})
+        cleanhbadge = hbadge[0].text.strip()
+    except:
+        cleanhbadge = ""
+
+    fhandle.write(furl + ';' + hname + ';' + cleandesc + ';' + cleanreview + ';' + cleanbadge + ';' + cleannumreviews + ';' + cleantype + ';' + cleanaddress + ';' + cleanstars + ';' + cleanrom + ';' + cleancontent + ';' + cleanequip + ';' + cleanequip2 + ';' + lat + ';' + long + ';' + schain + ';' + cleanhbadge + '\n')
