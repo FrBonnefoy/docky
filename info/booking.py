@@ -50,6 +50,15 @@ now = datetime.datetime.now()
 print (now.strftime("%Y-%m-%d %H:%M:%S"),file=flogfile)
 flogfile.close()
 
+#Setting up file with done urls
+
+
+fdonename="done"+str(timestamp)+".txt"
+fdonefile = open(fdonename,"w", encoding="utf-8")
+now = datetime.datetime.now()
+print (now.strftime("%Y-%m-%d %H:%M:%S"),file=fdonefile)
+fdonefile.close()
+
 #Generate consolited log file
 
 read_files = glob.glob("logs1*")
@@ -73,11 +82,13 @@ url_hotel=list(map(lambda x: x.strip(),url_hotel))
 
 
 
+
+
 # Setting up of CSV file
 timestamp=int(time.time())
 filename = "booking"+str(timestamp)+".csv"
 fhandle = open(filename,"w", encoding="utf-8")
-headers = "url; name; description; review; score; number of reviews; type of property; address; stars; recommend; descdetail; equip; equipdetail; lat; long; hotelchain; type2\n"
+headers = "url\tname\tdescription\treview\tscore\tnumber of reviews\ttype of property\taddress\tstars\trecommend\tdescdetail\tequip\tequipdetail\tlat\tlong\thotelchain\trestaurant\n"
 fhandle.write(headers)
 fhandle.close()
 
@@ -96,9 +107,9 @@ def bookcrawl(url):
     except:
         cleanaddress = ""
     #Generate stars variable
-    stars = book_soup.findAll("span", {"class":"hp__hotel_ratings__stars nowrap"})
+    stars = book_soup.findAll("span", {"class":"bui-rating bui-rating--smaller"})
     try:
-        cleanstars = stars[0].text.strip()
+        cleanstars = stars[0]['aria-label'].replace(' out of 5','')
     except:
         cleanstars = ""
 
@@ -125,29 +136,32 @@ def bookcrawl(url):
     except:
         hname=''
 
-    desc = container.findAll("div", {"class":"hotel_desc"})
-    review = container.findAll("div", {"class":"bui-review-score__title"})
+    desc = book_soup.findAll("div", {"id":"summary"})
+    review = book_soup.findAll("div", {"class":"bui-review-score__title"})
 
     try:
-        cleandesc = desc[0].text.strip().replace(";",",")
+        cleandesc = desc[0].text.strip().replace("\n"," ")
     except:
         cleandesc = ""
     try:
         cleanreview = review[0].text.strip()
     except:
         cleanreview = ""
-    badge = container.findAll("div", {"class":"bui-review-score__badge"})
+    badge = book_soup.findAll("div", {"class":"bui-review-score__badge"})
     try:
-        cleanbadge = badge[0].text.strip()
+        cleanbadge = badge[0].text.strip().replace(',','.')
+        cleanbadge=float(cleanbadge)
     except:
         cleanbadge = ""
-    numreviews = container.findAll("div", {"class":"bui-review-score__text"})
+    numreviews = book_soup.findAll("div", {"class":"bui-review-score__text"})
     try:
         cleannumreviews = numreviews[0].text.strip()
+        cleannumreviews=re.findall(r'\d+',cleannumreviews)[0]
+        cleannumreviews=int(cleannumreviews)
     except:
         cleannumreviews = ""
     try:
-        type = container.findAll("div", {"class":"bui-u-inline"})
+        type = book_soup.findAll("span", {"class":"hp__hotel-type-badge"})
         cleantype = type[0].text.strip()
     except:
         cleantype = ""
@@ -157,7 +171,7 @@ def bookcrawl(url):
         for i in range(0,len(equip)):
             new = equip[i].text.strip().replace('\n','').replace('\r','')
             listequip.append(new)
-            cleanequip = ','.join(listequip)
+            cleanequip = ' // '.join(listequip)
     except:
         cleanequip = ""
     try:
@@ -166,8 +180,9 @@ def bookcrawl(url):
         for i in range(0,len(equip2)):
             new = equip2[i].text.strip().replace('\n',',').replace('\r','')
             listequip2.append(new)
-        cleanequip2 = ','.join(listequip2)
-        cleanequip2 = replace(cleanequip2,',')
+        cleanequip2 = ' // '.join(listequip2)
+        cleanequip2=re.sub(r'(,+)',', ',cleanequip2).replace('\xa0!','')
+
 
     except:
         cleanequip2 = ""
@@ -175,21 +190,22 @@ def bookcrawl(url):
         comment = book_soup.findAll("span", {"class":"c-review__body"})
         listcomment = []
         for i in range(0,len(comment)):
-            newc = comment[i].text.strip().replace('\n','').replace('\r','')
+            newc = comment[i].text.strip().replace('\n','').replace('\r','').replace('\xa0','')
             listcomment.append(newc)
-        cleancomment = ','.join(listcomment)
+        cleancomment = ' // '.join(listcomment)
     except:
         cleancomment = ""
 
-    poi2 = book_soup.findAll("div", {"class":"hp-poi-list__description"})
-    poi3 = book_soup.findAll("span", {"class":"hp-poi-list__distance"})
+    inception = soup(str(book_soup.findAll("div", {"class":"hp_location_block__content_container"})),'html.parser')
+    poi2=inception.findAll("div",{'class':'bui-list__description'})
+    poi3 = inception.findAll("div",{'class':'bui-list__item-action hp_location_block__section_list_distance'})
 
     try:
         listpoi = []
         for i in range(0,len(poi2)):
-            poi = poi2[i].text.strip().replace('\n','').replace('\r','')+" "+poi3[i].text.strip().replace('\n','').replace('\r','')
+            poi = poi2[i].text.strip().replace('\n','').replace('\r','')+" : "+poi3[i].text.strip().replace('\n','').replace('\r','')
             listpoi.append(poi)
-        cleanpoi = ' , '.join(listpoi)
+        cleanpoi = ' // '.join(listpoi)
     except:
         cleanpoi = ""
 
@@ -222,16 +238,20 @@ def bookcrawl(url):
     except:
         schain=""
 
-
-    # Generate hotel type variable
+    restaurant=book_soup('div',{'class':'bui-grid bui-grid--bleed restaurant-block'})
     try:
-        hbadge = book_soup.findAll("span", {"class":"hp__hotel-type-badge"})
-        cleanhbadge = hbadge[0].text.strip()
+        cleanrest='Nom:'+restaurant[0].text.replace('\n',' ').replace('\xa0','')
     except:
-        cleanhbadge = ""
+        cleanrest=''
 
-    with open(filename,"a") as fhandle:
-        fhandle.write(furl + ';' + hname + ';' + cleandesc + ';' + cleanreview + ';' + cleanbadge + ';' + cleannumreviews + ';' + cleantype + ';' + cleanaddress + ';' + cleanstars + ';' + cleanrom + ';' + cleancontent + ';' + cleanequip + ';' + cleanequip2 + ';' + lat + ';' + long + ';' + schain + ';' + cleanhbadge + '\n')
+    varlist=[url , hname , cleandesc , cleanreview , cleanbadge , cleannumreviews ,  cleantype , cleanaddress , cleanstars , cleanrom , cleancontent , cleanequip , cleanequip2 , lat , long , schain , cleanrest ]
+    to_append=varlist
+    s = pd.DataFrame(to_append).T
+    s.to_csv(filename, mode='a', header=False,sep='\t',index=False)
+
+    with open(fdonename,"a") as f:
+        print(url,file=f)
+    print(url)
 
 
 print('\n','Fetching individual urls...','\n')
