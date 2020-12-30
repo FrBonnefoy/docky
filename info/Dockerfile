@@ -11,7 +11,8 @@ RUN apt-get update \
 	&& apt-get -y install python3.6 \
         && apt install -y python3-pip \
         && apt-get -y install python3-venv \
-        && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+        && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+	&& wget https://github.com/FrBonnefoy/Booking/blob/docky/booking.py
 	
 WORKDIR /Bookinfo
 
