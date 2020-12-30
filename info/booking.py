@@ -77,6 +77,7 @@ filename = "booking"+str(timestamp)+".csv"
 fhandle = open(filename,"w", encoding="utf-8")
 headers = "url; name; description; review; score; number of reviews; type of property; address; stars; recommend; descdetail; equip; equipdetail; lat; long; hotelchain; type2\n"
 fhandle.write(headers)
+fhandle.close()
 
 # Definition of the crawl function
 def bookcrawl(url):
@@ -217,7 +218,8 @@ def bookcrawl(url):
     except:
         cleanhbadge = ""
 
-    fhandle.write(furl + ';' + hname + ';' + cleandesc + ';' + cleanreview + ';' + cleanbadge + ';' + cleannumreviews + ';' + cleantype + ';' + cleanaddress + ';' + cleanstars + ';' + cleanrom + ';' + cleancontent + ';' + cleanequip + ';' + cleanequip2 + ';' + lat + ';' + long + ';' + schain + ';' + cleanhbadge + '\n')
+    with open(filename,"a") as fhandle:
+        fhandle.write(furl + ';' + hname + ';' + cleandesc + ';' + cleanreview + ';' + cleanbadge + ';' + cleannumreviews + ';' + cleantype + ';' + cleanaddress + ';' + cleanstars + ';' + cleanrom + ';' + cleancontent + ';' + cleanequip + ';' + cleanequip2 + ';' + lat + ';' + long + ';' + schain + ';' + cleanhbadge + '\n')
 
 
 print('\n','Fetching individual urls...','\n')
