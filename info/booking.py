@@ -122,9 +122,12 @@ def bookcrawl(url):
         hname=str(hname[0].text.strip())
         posnewline=hname.find('\n')+1
         hname=hname[posnewline:]
+    except:
+        hname=''
 
     desc = container.findAll("div", {"class":"hotel_desc"})
     review = container.findAll("div", {"class":"bui-review-score__title"})
+
     try:
         cleandesc = desc[0].text.strip().replace(";",",")
     except:
