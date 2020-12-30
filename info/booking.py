@@ -21,6 +21,8 @@ proxyDict = {
               "ftp"   : ftp_proxy
             }
 
+
+
 # Setting up the list of URLs
 
 #fname = input('\nPlease enter the name of the text file with the Booking URLs\n')
@@ -30,6 +32,37 @@ with open(fname) as handle:
     urls= handle.readlines()
 
 urls = list(dict.fromkeys(urls))
+
+
+#Setting log files
+
+timestamp=int(time.time())
+flogname="logs"+str(timestamp)+".txt"
+flogname = open(flog,"w", encoding="utf-8")
+print (now.strftime("%Y-%m-%d %H:%M:%S"),file=flog)
+flog.close()
+
+#Generate consolited log file
+
+read_files = glob.glob("logs1*")
+with open("consolidatedlog.txt", "wb") as outfile:
+    for f in read_files:
+        with open(f, "rb") as infile:
+            outfile.write(infile.read())
+
+
+#Import logs
+
+cflogname='consolidatedlog.txt'
+with open(cflogname) as flogdone:
+    done_urls=flogdone.readlines()
+
+done_urls=list(filter(lambda x: 'page is completed' in x , done_urls))
+done_urls=list(map(lambda x: re.findall(r"'(.+)'",x)[0],done_urls))
+url_hotel=list(set(urls)-set(done_urls))
+url_hotel=sorted(url_hotel)
+
+
 
 # Setting up of CSV file
 timestamp=int(time.time())
@@ -178,3 +211,22 @@ def bookcrawl(url):
         cleanhbadge = ""
 
     fhandle.write(furl + ';' + hname + ';' + cleandesc + ';' + cleanreview + ';' + cleanbadge + ';' + cleannumreviews + ';' + cleantype + ';' + cleanaddress + ';' + cleanstars + ';' + cleanrom + ';' + cleancontent + ';' + cleanequip + ';' + cleanequip2 + ';' + lat + ';' + long + ';' + schain + ';' + cleanhbadge + '\n')
+
+
+print('\n','Fetching individual urls...','\n')
+with open(flogname,"a") as flog:
+    print('\n','Fetching individual urls...','\n',file=flogname)
+
+
+with concurrent.futures.ProcessPoolExecutor(max_workers=7) as executor:
+    future_to_url = {executor.submit(bookcrawl, url): url for url in urls}
+    for future in tqdm(concurrent.futures.as_completed(future_to_url),total=len(future_to_url)):
+        url = future_to_url[future]
+        try:
+            data = future.result()
+        except Exception as exc:
+            with open(filename4,"a") as flog:
+                print('%r generated an exception: %s' % (url, exc),file=flogname)
+        else:
+            with open(filename4,"a") as flog:
+                print('%r page is completed' % url,file=flogname)
