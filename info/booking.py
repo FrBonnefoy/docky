@@ -38,9 +38,9 @@ urls = list(dict.fromkeys(urls))
 
 timestamp=int(time.time())
 flogname="logs"+str(timestamp)+".txt"
-flogname = open(flog,"w", encoding="utf-8")
-print (now.strftime("%Y-%m-%d %H:%M:%S"),file=flog)
-flog.close()
+flogfile = open(flogname,"w", encoding="utf-8")
+print (now.strftime("%Y-%m-%d %H:%M:%S"),file=flogfile)
+flogfile.close()
 
 #Generate consolited log file
 
@@ -214,8 +214,8 @@ def bookcrawl(url):
 
 
 print('\n','Fetching individual urls...','\n')
-with open(flogname,"a") as flog:
-    print('\n','Fetching individual urls...','\n',file=flogname)
+with open(flogname,"a") as flogfile:
+    print('\n','Fetching individual urls...','\n',file=flogfile)
 
 
 with concurrent.futures.ProcessPoolExecutor(max_workers=7) as executor:
@@ -225,8 +225,8 @@ with concurrent.futures.ProcessPoolExecutor(max_workers=7) as executor:
         try:
             data = future.result()
         except Exception as exc:
-            with open(filename4,"a") as flog:
-                print('%r generated an exception: %s' % (url, exc),file=flogname)
+            with open(flogname,"a") as flogfile:
+                print('%r generated an exception: %s' % (url, exc),file=flogfile)
         else:
-            with open(filename4,"a") as flog:
-                print('%r page is completed' % url,file=flogname)
+            with open(flogname,"a") as flogfile:
+                print('%r page is completed' % url,file=flogfile)
