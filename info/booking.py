@@ -16,6 +16,7 @@ import json
 import pandas as pd
 import datetime
 import glob
+import tqdm
 
 # Setting up proxy
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -164,7 +165,11 @@ def bookcrawl(url):
         type = book_soup.findAll("span", {"class":"hp__hotel-type-badge"})
         cleantype = type[0].text.strip()
     except:
-        cleantype = ""
+        try:
+            type = book_soup.findAll("span", {"data-exposure-name":"property_tag_hp"})
+            cleantype = type[0].text.strip()
+        except:
+            cleantype = ""
     try:
         equip = book_soup.findAll("div", {"class":"important_facility"})
         listequip = []
