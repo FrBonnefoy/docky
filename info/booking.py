@@ -5,6 +5,7 @@
 from concurrent.futures import ProcessPoolExecutor
 from concurrent.futures import Future
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 import concurrent.futures
 import requests
 from bs4 import BeautifulSoup as soup
@@ -17,7 +18,7 @@ import datetime
 import glob
 
 # Setting up proxy
-
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 http_proxy = "http://127.0.0.1:24000"
 https_proxy = "https://127.0.0.1:24000"
 ftp_proxy = "ftp://127.0.0.1:24000"
@@ -68,6 +69,7 @@ done_urls=list(filter(lambda x: 'page is completed' in x , done_urls))
 done_urls=list(map(lambda x: re.findall(r"'(.+)'",x)[0],done_urls))
 url_hotel=list(set(urls)-set(done_urls))
 url_hotel=sorted(url_hotel)
+url_hotel=list(map(lambda x: x.strip(),url_hotel))
 
 
 
