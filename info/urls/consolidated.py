@@ -1,3 +1,5 @@
+import glob
+
 # Consolidate url file
 
 read_files = glob.glob("booking_done_url*")
