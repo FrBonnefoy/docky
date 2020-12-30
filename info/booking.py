@@ -26,7 +26,7 @@ proxyDict = {
 # Setting up the list of URLs
 
 #fname = input('\nPlease enter the name of the text file with the Booking URLs\n')
-fname = '~/docky/urls/booking_url.txt'
+fname = '/Bookinfo/urls/booking_url.txt'
 
 with open(fname) as handle:
     urls= handle.readlines()
