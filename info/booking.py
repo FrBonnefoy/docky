@@ -84,7 +84,7 @@ fhandle.close()
 # Definition of the crawl function
 def bookcrawl(url):
     # Opening webpage and parsing of html
-    r=requests.get(url, proxies=proxyDict)
+    r=requests.get(url, proxies=proxyDict, verify=False)
     book_soup = soup(r.text, "html.parser")
 
     #Generate address variable
