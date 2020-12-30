@@ -16,7 +16,6 @@ with open(flogname) as flogdone:
 
 done_urls=list(filter(lambda x: 'https://www.booking.com/' in x, done_urls))
 
-with open("booking_url.txt", "wb") as outfile:
+with open("booking_url.txt", "w") as outfile:
     for url in done_urls:
         outfile.write(url)
-        outfile.write('\n')
