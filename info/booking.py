@@ -16,7 +16,7 @@ import json
 import pandas as pd
 import datetime
 import glob
-import tqdm
+from tqdm import tqdm
 
 # Setting up proxy
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
