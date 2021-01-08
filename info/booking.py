@@ -95,6 +95,7 @@ fhandle.close()
 
 # Definition of the crawl function
 def bookcrawl(url):
+    global cleanequip
     with open(flogname,"a") as flogfile:
         print("Fetching "+url,file=flogfile)
     # Opening webpage and parsing of html
