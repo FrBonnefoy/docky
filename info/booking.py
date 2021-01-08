@@ -260,16 +260,18 @@ def bookcrawl(url):
 
 
 print('\n','Fetching individual urls...','\n')
+pbar = tqdm(total=len(url_hotel))
 with open(flogname,"a") as flogfile:
     print('\n','Fetching individual urls...','\n',file=flogfile)
 
 
 with concurrent.futures.ThreadPoolExecutor(max_workers=7) as executor:
     future_to_url = {executor.submit(bookcrawl, url): url for url in url_hotel}
-    for future in tqdm(concurrent.futures.as_completed(future_to_url),total=len(url_hotel)):
+    for future in concurrent.futures.as_completed(future_to_url):
         url = future_to_url[future]
         try:
             data = future.result()
+            pbar.update(1)
         except Exception as exc:
             with open(flogname,"a") as flogfile:
                 print('%r generated an exception: %s' % (url, exc),file=flogfile)
