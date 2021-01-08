@@ -89,7 +89,7 @@ url_hotel=list(map(lambda x: x.strip(),url_hotel))
 timestamp=int(time.time())
 filename = "booking"+str(timestamp)+".csv"
 fhandle = open(filename,"w", encoding="utf-8")
-headers = "url\tname\tdescription\treview\tscore\tnumber of reviews\ttype of property\taddress\tstars\trecommend\tdescdetail\tequip\tequipdetail\tlat\tlong\thotelchain\trestaurant\n"
+headers = "url\tname\tdescription\treview\tscore\tnumber of reviews\ttype of property\taddress\tstars\trecommend\tdescdetail\tequip\tequipdetail\tlat\tlong\thotelchain\trestaurant\tPOIs\tComments\n"
 fhandle.write(headers)
 fhandle.close()
 
@@ -249,7 +249,7 @@ def bookcrawl(url):
     except:
         cleanrest=''
 
-    varlist=[url , hname , cleandesc , cleanreview , cleanbadge , cleannumreviews ,  cleantype , cleanaddress , cleanstars , cleanrom , cleancontent , cleanequip , cleanequip2 , lat , long , schain , cleanrest ]
+    varlist=[url , hname , cleandesc , cleanreview , cleanbadge , cleannumreviews ,  cleantype , cleanaddress , cleanstars , cleanrom , cleancontent , cleanequip , cleanequip2 , lat , long , schain , cleanrest,cleanpoi,cleancomment ]
     to_append=varlist
     s = pd.DataFrame(to_append).T
     s.to_csv(filename, mode='a', header=False,sep='\t',index=False)
