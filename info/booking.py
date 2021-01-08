@@ -89,14 +89,14 @@ url_hotel=list(map(lambda x: x.strip(),url_hotel))
 timestamp=int(time.time())
 filename = "booking"+str(timestamp)+".csv"
 fhandle = open(filename,"w", encoding="utf-8")
-headers = "url\tname\tdescription\treview\tscore\tnumber of reviews\ttype of property\taddress\tstars\trecommend\tdescdetail\tequip\tequipdetail\tlat\tlong\thotelchain\trestaurant\n"
+headers = "url\tname\tdescription\treview\tscore\tnumber of reviews\ttype of property\taddress\tstars\trecommend\tdescdetail\tequip\tequipdetail\tlat\tlong\thotelchain\trestaurant\tPOIs\tComments\n"
 fhandle.write(headers)
 fhandle.close()
 
 # Definition of the crawl function
 def bookcrawl(url):
     with open(flogname,"a") as flogfile:
-        print(url,file=flogfile)
+        print("Fetching "+url,file=flogfile)
     # Opening webpage and parsing of html
     r=requests.get(url, proxies=proxyDict, verify=False)
     book_soup = soup(r.text, "html.parser")
@@ -249,7 +249,7 @@ def bookcrawl(url):
     except:
         cleanrest=''
 
-    varlist=[url , hname , cleandesc , cleanreview , cleanbadge , cleannumreviews ,  cleantype , cleanaddress , cleanstars , cleanrom , cleancontent , cleanequip , cleanequip2 , lat , long , schain , cleanrest ]
+    varlist=[url , hname , cleandesc , cleanreview , cleanbadge , cleannumreviews ,  cleantype , cleanaddress , cleanstars , cleanrom , cleancontent , cleanequip , cleanequip2 , lat , long , schain , cleanrest,cleanpoi,cleancomment ]
     to_append=varlist
     s = pd.DataFrame(to_append).T
     s.to_csv(filename, mode='a', header=False,sep='\t',index=False)
@@ -264,9 +264,9 @@ with open(flogname,"a") as flogfile:
     print('\n','Fetching individual urls...','\n',file=flogfile)
 
 
-with concurrent.futures.ProcessPoolExecutor(max_workers=20) as executor:
+with concurrent.futures.ThreadPoolExecutor(max_workers=7) as executor:
     future_to_url = {executor.submit(bookcrawl, url): url for url in url_hotel}
-    for future in tqdm(concurrent.futures.as_completed(future_to_url),total=len(future_to_url)):
+    for future in tqdm(concurrent.futures.as_completed(future_to_url),total=len(url_hotel)):
         url = future_to_url[future]
         try:
             data = future.result()
