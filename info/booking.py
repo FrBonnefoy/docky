@@ -96,7 +96,7 @@ fhandle.close()
 # Definition of the crawl function
 def bookcrawl(url):
     with open(flogname,"a") as flogfile:
-        print(url,file=flogfile)
+        print("Fetching "+url,file=flogfile)
     # Opening webpage and parsing of html
     r=requests.get(url, proxies=proxyDict, verify=False)
     book_soup = soup(r.text, "html.parser")
@@ -264,9 +264,9 @@ with open(flogname,"a") as flogfile:
     print('\n','Fetching individual urls...','\n',file=flogfile)
 
 
-with concurrent.futures.ProcessPoolExecutor(max_workers=7) as executor:
+with concurrent.futures.ThreadPoolExecutor(max_workers=7) as executor:
     future_to_url = {executor.submit(bookcrawl, url): url for url in url_hotel}
-    for future in tqdm(concurrent.futures.as_completed(future_to_url),total=len(future_to_url)):
+    for future in tqdm(concurrent.futures.as_completed(future_to_url),total=len(url_hotel)):
         url = future_to_url[future]
         try:
             data = future.result()
