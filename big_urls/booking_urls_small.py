@@ -17,8 +17,8 @@ from tqdm import tqdm
 from random import randint
 import datetime
 import glob
-from selenium.webdriver.common.by import By 
-from selenium.webdriver.support.ui import WebDriverWait 
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import psutil
 from selenium.common.exceptions import WebDriverException
@@ -67,7 +67,7 @@ fhandle4.close()
 
 
 
- 
+
 
 '''
 ========Modified version for France- this part is commented out (inactive)=========
@@ -90,7 +90,7 @@ for x in urls_1:
         url_start.append('https://www.booking.com'+str(x['href']))
         with open(filename5,"a") as f5:
             print('https://www.booking.com'+str(x['href']),file=f5)
-            
+
 sp.close_session()
 sp.browser.quit()
 with open(filename5a,"a") as f5a:
@@ -116,24 +116,24 @@ def bookgeturlcity(x):
             test=urls_2_vf[0]['href']
         except:
             time.sleep(randint(10,15))
-            continue       
+            continue
         for y in urls_2_vf:
             try:
                 url_a_city.append(re.sub(r'(\?)(.+)','','https://www.booking.com'+str(y['href'])))
                 with open(filename6,"a") as f6:
                     print(re.sub(r'(\?)(.+)','','https://www.booking.com'+str(y['href'])),file=f6)
-                    
+
             except:
                 url_a_city.append('https://www.booking.com'+str(y['href']))
                 with open(filename6,"a") as f6:
                     print('https://www.booking.com'+str(y['href']),file=f6)
-        break          
-   
+        break
+
 # Execute requests with 20 threads max
 print('\n','Fetching city urls...','\n')
 with open(filename4,"a") as flog:
     print('\n','Fetching city urls...','\n',file=flog)
-                
+
 with concurrent.futures.ProcessPoolExecutor(max_workers=25) as executor:
     future_to_url = {executor.submit(bookgeturlcity, url): url for url in url_start}
     for future in tqdm(concurrent.futures.as_completed(future_to_url),total=len(future_to_url)):
@@ -150,7 +150,7 @@ url_a_city=list(map(lambda x: x.replace('/destination',''),url_a_city))
 url_a_city=list(map(lambda x: re.sub(r'(\?)(.+)','',x),url_a_city))
 with open(filename6a,"a") as f6a:
     print(url_a_city,file=f6a)
-    
+
 continue_=input('\nContinue?\n')
 ========Modified version for France- this part is commented out (inactive)=========
 '''
@@ -177,8 +177,8 @@ url_a_city=list(map(lambda x: x.replace('/destination',''),url_a_city))
 flogname='consolidatedlog.txt'
 with open(flogname) as flogdone:
     done_urls=flogdone.readlines()
-  
-done_urls=list(filter(lambda x: 'page is completed' in x or "title^='Page suivante" in x, done_urls))  
+
+done_urls=list(filter(lambda x: 'page is completed' in x or "title^='Page suivante" in x, done_urls))
 done_urls=list(map(lambda x: re.findall(r"'(.+)'",x)[0],done_urls))
 url_a_city=list(set(url_a_city)-set(done_urls))
 url_a_city=sorted(url_a_city)
@@ -209,7 +209,7 @@ def searchcityurl(x):
             PROCNAME = "geckodriver"
             for proc in psutil.process_iter():
                  if proc.name() == PROCNAME:
-                      proc.kill()  
+                      proc.kill()
     sp.change(x)
     time.sleep(1)
     c=sp.browser.find_elements_by_id('onetrust-reject-all-handler')
@@ -242,21 +242,40 @@ def searchcityurl(x):
     #smallville=sp.scrape('span',{'class':'bui_font_strong'})
     #smallville=smallville.now()
     if element_c_seuil>1000:
-        with open(filename4,"a") as flog:
-            print('Skipped :',x,file=flog)
-        with open(filename,'a') as f:
-            f.write(x)
-            f.write('\n')
-        sp.close_session()
-        sp.browser.quit()
-    elif element_c_seuil<=1000:
+        sp.data()
+        e1=str(sp.sopa.findAll('a',{'data-id':"class-1"}))
+        e2=str(sp.sopa.findAll('a',{'data-id':"class-2"}))
+        e3=str(sp.sopa.findAll('a',{'data-id':"class-3"}))
+        e4=str(sp.sopa.findAll('a',{'data-id':"class-4"}))
+        e5=str(sp.sopa.findAll('a',{'data-id':"class-5"}))
+        e0=str(sp.sopa.findAll('a',{'data-id':"class-0"}))
+        se1=sp.soup(e1,'html.parser')
+        se2=sp.soup(e2,'html.parser')
+        se3=sp.soup(e3,'html.parser')
+        se4=sp.soup(e4,'html.parser')
+        se5=sp.soup(e5,'html.parser')
+        se0=sp.soup(e0,'html.parser')
+        de1={'label':se1.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(se1.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_class"]/div[2]/a[1]'}
+        de2={'label':se2.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(se2.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_class"]/div[2]/a[2]'}
+        de3={'label':se3.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(se3.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_class"]/div[2]/a[3]'}
+        de4={'label':se4.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(se4.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_class"]/div[2]/a[4]'}
+        de5={'label':se5.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(se5.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_class"]/div[2]/a[5]'}
+        de0={'label':se0.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(se0.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_class"]/div[2]/a[0]'}
+        listetoiles=[de1,de2,de3,de4,de5,de0]
+        nextetoiles=[]
+        for z in listetoiles:
+            elem = sp.browser.find_element_by_xpath(z['id'])
+            sp.browser.execute_script("arguments[0].scrollIntoView();", elem)
+            elem.click()
+            if a['count']<=1000:
+
         with open(filename4,"a") as flog:
             print('Fetching : ',x,file=flog)
         with open(filename3,'a') as f3:
             f3.write(x)
             f3.write('\n')
         urlfetch()
-        element = WebDriverWait(sp.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']"))) 
+        element = WebDriverWait(sp.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
         click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
         sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
         click_element.click()
@@ -265,12 +284,12 @@ def searchcityurl(x):
                 url_0=str(sp.browser.current_url)
                 urlfetch()
                 timeout = time.time() + 45
-                element = WebDriverWait(sp.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']"))) 
+                element = WebDriverWait(sp.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
                 click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
                 sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
                 click_element.click()
                 time.sleep(4)
-                url_1=str(sp.browser.current_url)       
+                url_1=str(sp.browser.current_url)
             except:
                 if len(sp.browser.find_elements_by_css_selector("[title^='Page suivante']"))>0:
                     sp.close_session()
@@ -282,14 +301,14 @@ def searchcityurl(x):
                     sp.browser.quit()
                     raise Exception("Failed at pressing next-page button-Button not present...Check for completion")
                     break
-                      
+
             if url_0==url_1:
                 sp.close_session()
                 sp.browser.quit()
                 break
 
-        
-# Run algorithm 30 concurrent browsers 
+
+# Run algorithm 30 concurrent browsers
 
 
 print('\n','Fetching individual urls...','\n')
