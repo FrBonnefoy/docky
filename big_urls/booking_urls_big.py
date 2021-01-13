@@ -264,6 +264,7 @@ def searchcityurl(x):
         listetoiles=[de1,de2,de3,de4,de5,de0]
         nextetoiles=[]
         for z in listetoiles:
+            sp.change(x)
             elem = sp.browser.find_element_by_xpath(z['id'])
             sp.browser.execute_script("arguments[0].scrollIntoView();", elem)
             elem.click()
@@ -304,8 +305,6 @@ def searchcityurl(x):
                             break
 
                     if url_0==url_1:
-                        sp.close_session()
-                        sp.browser.quit()
                         break
             if z['count']>1000:
                 types=sp.sopa.findAll('a',{'data-name':"ht_id"})
@@ -355,8 +354,6 @@ def searchcityurl(x):
                                     break
 
                             if url_0==url_1:
-                                sp.close_session()
-                                sp.browser.quit()
                                 break
 
                     if type['count']>1000:
@@ -406,8 +403,6 @@ def searchcityurl(x):
                                             break
 
                                     if url_0==url_1:
-                                        sp.close_session()
-                                        sp.browser.quit()
                                         break
 
                             if district['count']>1000:
@@ -418,6 +413,10 @@ def searchcityurl(x):
                                     f3.write(x)
                                     f3.write('\n')
 
+
+    sp.close_session()
+    sp.browser.quit()
+    
 # Run algorithm 30 concurrent browsers
 
 
