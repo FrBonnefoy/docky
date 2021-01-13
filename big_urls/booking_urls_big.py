@@ -267,46 +267,156 @@ def searchcityurl(x):
             elem = sp.browser.find_element_by_xpath(z['id'])
             sp.browser.execute_script("arguments[0].scrollIntoView();", elem)
             elem.click()
-            if a['count']<=1000:
+            if z['count']<=1000:
 
-        with open(filename4,"a") as flog:
-            print('Fetching : ',x,file=flog)
-        with open(filename3,'a') as f3:
-            f3.write(x)
-            f3.write('\n')
-        urlfetch()
-        element = WebDriverWait(sp.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
-        click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
-        sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
-        click_element.click()
-        while True:
-            try:
-                url_0=str(sp.browser.current_url)
+                with open(filename4,"a") as flog:
+                    options=z['label']
+                    print('Fetching : ',x,options, file=flog)
+                with open(filename3,'a') as f3:
+                    f3.write(x)
+                    f3.write('\n')
                 urlfetch()
-                timeout = time.time() + 45
                 element = WebDriverWait(sp.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
                 click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
                 sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
                 click_element.click()
-                time.sleep(4)
-                url_1=str(sp.browser.current_url)
-            except:
-                if len(sp.browser.find_elements_by_css_selector("[title^='Page suivante']"))>0:
-                    sp.close_session()
-                    sp.browser.quit()
-                    raise Exception("Failed at pressing next-page button-Timeout")
-                    break
-                else:
-                    sp.close_session()
-                    sp.browser.quit()
-                    raise Exception("Failed at pressing next-page button-Button not present...Check for completion")
-                    break
+                while True:
+                    try:
+                        url_0=str(sp.browser.current_url)
+                        urlfetch()
+                        timeout = time.time() + 45
+                        element = WebDriverWait(sp.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+                        click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+                        sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+                        click_element.click()
+                        time.sleep(4)
+                        url_1=str(sp.browser.current_url)
+                    except:
+                        if len(sp.browser.find_elements_by_css_selector("[title^='Page suivante']"))>0:
+                            sp.close_session()
+                            sp.browser.quit()
+                            raise Exception("Failed at pressing next-page button-Timeout")
+                            break
+                        else:
+                            sp.close_session()
+                            sp.browser.quit()
+                            raise Exception("Failed at pressing next-page button-Button not present...Check for completion")
+                            break
 
-            if url_0==url_1:
-                sp.close_session()
-                sp.browser.quit()
-                break
+                    if url_0==url_1:
+                        sp.close_session()
+                        sp.browser.quit()
+                        break
+            if z['count']>1000:
+                types=sp.sopa.findAll('a',{'data-name':"ht_id"})
+                typesh=[]
+                for type in types:
+                    inception=sp.soup(str(type),'html.parser')
+                    case={'label':inception.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(inception.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_hoteltype"]/div[2]/a['+str(wea.index(a)+1)+']'}
+                    typesh.append(case)
+                for type in typesh:
+                    elem_type = sp.browser.find_element_by_xpath(type['id'])
+                    sp.browser.execute_script("arguments[0].scrollIntoView();", elem_type)
+                    elem_type.click()
+                    if type['count']<=1000:
 
+                        with open(filename4,"a") as flog:
+                            options=z['label']+'//'+type['label']
+                            print('Fetching : ',x,options, file=flog)
+                        with open(filename3,'a') as f3:
+                            f3.write(x)
+                            f3.write('\n')
+                        urlfetch()
+                        element = WebDriverWait(sp.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+                        click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+                        sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+                        click_element.click()
+                        while True:
+                            try:
+                                url_0=str(sp.browser.current_url)
+                                urlfetch()
+                                timeout = time.time() + 45
+                                element = WebDriverWait(sp.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+                                click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+                                sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+                                click_element.click()
+                                time.sleep(4)
+                                url_1=str(sp.browser.current_url)
+                            except:
+                                if len(sp.browser.find_elements_by_css_selector("[title^='Page suivante']"))>0:
+                                    sp.close_session()
+                                    sp.browser.quit()
+                                    raise Exception("Failed at pressing next-page button-Timeout")
+                                    break
+                                else:
+                                    sp.close_session()
+                                    sp.browser.quit()
+                                    raise Exception("Failed at pressing next-page button-Button not present...Check for completion")
+                                    break
+
+                            if url_0==url_1:
+                                sp.close_session()
+                                sp.browser.quit()
+                                break
+
+                    if type['count']>1000:
+                        locations=sp.sopa.findAll('a',{'data-name':"di"})
+                        for loc in locations:
+                            inception2=sp.soup(str(loc),'html.parser')
+                            case2={'label':inception.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(inception.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_district"]/div[2]/a['+str(wea.index(a)+1)+']'}
+                            districts.append(case2)
+                        for district in districts:
+                            elem_type = sp.browser.find_element_by_xpath(type['id'])
+                            sp.browser.execute_script("arguments[0].scrollIntoView();", elem_type)
+                            elem_type.click()
+                            if district['count']<=1000:
+
+                                with open(filename4,"a") as flog:
+                                    options=z['label']+'//'+type['label']+'//'+district['label']
+                                    print('Fetching : ',x,options, file=flog)
+                                with open(filename3,'a') as f3:
+                                    f3.write(x)
+                                    f3.write('\n')
+                                urlfetch()
+                                element = WebDriverWait(sp.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+                                click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+                                sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+                                click_element.click()
+                                while True:
+                                    try:
+                                        url_0=str(sp.browser.current_url)
+                                        urlfetch()
+                                        timeout = time.time() + 45
+                                        element = WebDriverWait(sp.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+                                        click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+                                        sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+                                        click_element.click()
+                                        time.sleep(4)
+                                        url_1=str(sp.browser.current_url)
+                                    except:
+                                        if len(sp.browser.find_elements_by_css_selector("[title^='Page suivante']"))>0:
+                                            sp.close_session()
+                                            sp.browser.quit()
+                                            raise Exception("Failed at pressing next-page button-Timeout")
+                                            break
+                                        else:
+                                            sp.close_session()
+                                            sp.browser.quit()
+                                            raise Exception("Failed at pressing next-page button-Button not present...Check for completion")
+                                            break
+
+                                    if url_0==url_1:
+                                        sp.close_session()
+                                        sp.browser.quit()
+                                        break
+
+                            if district['count']>1000:
+                                with open(filename4,"a") as flog:
+                                    options=z['label']+'//'+type['label']+'//'+district['label']
+                                    print('Fetching : ',x,options, file=flog)
+                                with open(filename3,'a') as f3:
+                                    f3.write(x)
+                                    f3.write('\n')
 
 # Run algorithm 30 concurrent browsers
 
