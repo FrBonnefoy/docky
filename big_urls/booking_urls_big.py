@@ -201,222 +201,427 @@ def urlfetch():
 # Define main function
 
 def searchcityurl(x):
-    for counter in range(5):
-        try:
-            sp.open_session_firefox()
-            break
-        except:
-            PROCNAME = "geckodriver"
-            for proc in psutil.process_iter():
-                 if proc.name() == PROCNAME:
-                      proc.kill()
-    sp.change(x)
-    time.sleep(1)
-    c=sp.browser.find_elements_by_id('onetrust-reject-all-handler')
-    try:
-        c[0].click()
-        time.sleep(1)
-    except:
-        pass
-    time.sleep(1)
-    a=sp.browser.find_elements_by_class_name('sb-searchbox__button ')
-    sp.browser.execute_script("arguments[0].scrollIntoView();", a[0])
-    a[0].click()
-    time.sleep(1)
-    b=sp.browser.find_elements_by_class_name('sorth1')
-    sp.browser.execute_script("arguments[0].scrollIntoView();", b[0])
-    b[0].click()
-    time.sleep(1)
-    element_=sp.scrape('h1',{'class':'sorth1'})
-    element_=element_.now()
-    element_=element_[0].text
-    element_=element_.replace(' ','').strip()
-    try:
-        element_=element_.replace('\xa0','').replace(' ','').strip()
-    except:
-        pass
-    element_c=re.findall(r"(\d+)",element_)
-    element_c_seuil=int(element_c[0])
-    with open(filename4,"a") as flog:
-        print(element_c_seuil," etablissements sur l'url: ",x,file=flog)
-    #smallville=sp.scrape('span',{'class':'bui_font_strong'})
-    #smallville=smallville.now()
-    if element_c_seuil>1000:
-        sp.data()
-        e1=str(sp.sopa.findAll('a',{'data-id':"class-1"}))
-        e2=str(sp.sopa.findAll('a',{'data-id':"class-2"}))
-        e3=str(sp.sopa.findAll('a',{'data-id':"class-3"}))
-        e4=str(sp.sopa.findAll('a',{'data-id':"class-4"}))
-        e5=str(sp.sopa.findAll('a',{'data-id':"class-5"}))
-        e0=str(sp.sopa.findAll('a',{'data-id':"class-0"}))
-        se1=sp.soup(e1,'html.parser')
-        se2=sp.soup(e2,'html.parser')
-        se3=sp.soup(e3,'html.parser')
-        se4=sp.soup(e4,'html.parser')
-        se5=sp.soup(e5,'html.parser')
-        se0=sp.soup(e0,'html.parser')
-        de1={'label':se1.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(se1.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_class"]/div[2]/a[1]'}
-        de2={'label':se2.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(se2.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_class"]/div[2]/a[2]'}
-        de3={'label':se3.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(se3.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_class"]/div[2]/a[3]'}
-        de4={'label':se4.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(se4.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_class"]/div[2]/a[4]'}
-        de5={'label':se5.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(se5.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_class"]/div[2]/a[5]'}
-        de0={'label':se0.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(se0.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_class"]/div[2]/a[0]'}
-        listetoiles=[de1,de2,de3,de4,de5,de0]
-        nextetoiles=[]
-        for z in listetoiles:
-            sp.change(x)
-            elem = sp.browser.find_element_by_xpath(z['id'])
-            sp.browser.execute_script("arguments[0].scrollIntoView();", elem)
-            elem.click()
-            if z['count']<=1000:
+	try:
+		for counter in range(5):
+			try:
+				sp.open_session_firefox()
+				#sp.browser.set_window_size(1920, 1080)
+				#sp.browser.execute_script("document.body.style.zoom='25%'")
+				#sp.browser.execute_script("document.body.style.transform = 'scale(0.25)'")
+				break
+			except:
+				PROCNAME = "geckodriver"
+				for proc in psutil.process_iter():
+					 if proc.name() == PROCNAME:
+						  proc.kill()
 
-                with open(filename4,"a") as flog:
-                    options=z['label']
-                    print('Fetching : ',x,options, file=flog)
-                with open(filename3,'a') as f3:
-                    f3.write(x)
-                    f3.write('\n')
-                urlfetch()
-                element = WebDriverWait(sp.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
-                click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
-                sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
-                click_element.click()
-                while True:
-                    try:
-                        url_0=str(sp.browser.current_url)
-                        urlfetch()
-                        timeout = time.time() + 45
-                        element = WebDriverWait(sp.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
-                        click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
-                        sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
-                        click_element.click()
-                        time.sleep(4)
-                        url_1=str(sp.browser.current_url)
-                    except:
-                        if len(sp.browser.find_elements_by_css_selector("[title^='Page suivante']"))>0:
-                            sp.close_session()
-                            sp.browser.quit()
-                            raise Exception("Failed at pressing next-page button-Timeout")
-                            break
-                        else:
-                            sp.close_session()
-                            sp.browser.quit()
-                            raise Exception("Failed at pressing next-page button-Button not present...Check for completion")
-                            break
+		sp.change(x)
 
-                    if url_0==url_1:
-                        break
-            if z['count']>1000:
-                types=sp.sopa.findAll('a',{'data-name':"ht_id"})
-                typesh=[]
-                for type in types:
-                    inception=sp.soup(str(type),'html.parser')
-                    case={'label':inception.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(inception.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_hoteltype"]/div[2]/a['+str(wea.index(a)+1)+']'}
-                    typesh.append(case)
-                for type in typesh:
-                    elem_type = sp.browser.find_element_by_xpath(type['id'])
-                    sp.browser.execute_script("arguments[0].scrollIntoView();", elem_type)
-                    elem_type.click()
-                    if type['count']<=1000:
+		#sp.browser.execute_script("document.body.style.zoom='25%'")
+		time.sleep(1)
+		c=sp.browser.find_elements_by_id('onetrust-reject-all-handler')
+		try:
+			c[0].click()
+			time.sleep(1)
+		except:
+			pass
+		time.sleep(1)
+		a=sp.browser.find_elements_by_class_name('sb-searchbox__button ')
+		sp.browser.execute_script("arguments[0].scrollIntoView();", a[0])
+		a[0].click()
+		time.sleep(1)
+		b=sp.browser.find_elements_by_class_name('sorth1')
+		sp.browser.execute_script("arguments[0].scrollIntoView();", b[0])
+		b[0].click()
+		time.sleep(1)
+		element_=sp.scrape('h1',{'class':'sorth1'})
+		element_=element_.now()
+		element_=element_[0].text
+		element_=element_.replace(' ','').strip()
+		try:
+			element_=element_.replace('\xa0','').replace(' ','').strip()
+		except:
+			pass
+		element_c=re.findall(r"(\d+)",element_)
+		element_c_seuil=int(element_c[0])
+		with open(filename4,"a") as flog:
+			print(element_c_seuil," etablissements sur l'url: ",x)
+			print(element_c_seuil," etablissements sur l'url: ",x,file=flog)
+		#smallville=sp.scrape('span',{'class':'bui_font_strong'})
+		#smallville=smallville.now()
 
-                        with open(filename4,"a") as flog:
-                            options=z['label']+'//'+type['label']
-                            print('Fetching : ',x,options, file=flog)
-                        with open(filename3,'a') as f3:
-                            f3.write(x)
-                            f3.write('\n')
-                        urlfetch()
-                        element = WebDriverWait(sp.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
-                        click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
-                        sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
-                        click_element.click()
-                        while True:
-                            try:
-                                url_0=str(sp.browser.current_url)
-                                urlfetch()
-                                timeout = time.time() + 45
-                                element = WebDriverWait(sp.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
-                                click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
-                                sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
-                                click_element.click()
-                                time.sleep(4)
-                                url_1=str(sp.browser.current_url)
-                            except:
-                                if len(sp.browser.find_elements_by_css_selector("[title^='Page suivante']"))>0:
-                                    sp.close_session()
-                                    sp.browser.quit()
-                                    raise Exception("Failed at pressing next-page button-Timeout")
-                                    break
-                                else:
-                                    sp.close_session()
-                                    sp.browser.quit()
-                                    raise Exception("Failed at pressing next-page button-Button not present...Check for completion")
-                                    break
+		try:
+			visio1=sp.browser.find_element_by_xpath('//*[@id="filter_hoteltype"]/div[2]/button[1]')
+			sp.browser.execute_script("arguments[0].scrollIntoView();", visio1)
+			visio1.click()
+		except:
+			pass
+		try:
+			visio2=sp.browser.find_element_by_xpath('//*[@id="filter_district"]/div[2]/button[1]')
+			sp.browser.execute_script("arguments[0].scrollIntoView();", visio2)
+			visio2.click()
+		except:
+			pass
+		try:
+			visio3=sp.browser.find_element_by_xpath('//*[@id="filter_hoteltype"]/div[2]/button[1]')
+			sp.browser.execute_script("arguments[0].scrollIntoView();", visio3)
+			visio3.click()
+		except:
+			pass
 
-                            if url_0==url_1:
-                                break
+		if element_c_seuil>1000:
+			sp.data()
+			e1=str(sp.sopa.findAll('a',{'data-id':"class-1"}))
+			e2=str(sp.sopa.findAll('a',{'data-id':"class-2"}))
+			e3=str(sp.sopa.findAll('a',{'data-id':"class-3"}))
+			e4=str(sp.sopa.findAll('a',{'data-id':"class-4"}))
+			e5=str(sp.sopa.findAll('a',{'data-id':"class-5"}))
+			e0=str(sp.sopa.findAll('a',{'data-id':"class-0"}))
+			se1=sp.soup(e1,'html.parser')
+			se2=sp.soup(e2,'html.parser')
+			se3=sp.soup(e3,'html.parser')
+			se4=sp.soup(e4,'html.parser')
+			se5=sp.soup(e5,'html.parser')
+			se0=sp.soup(e0,'html.parser')
+			de1={'label':se1.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(se1.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_class"]/div[2]/a[1]'}
+			de2={'label':se2.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(se2.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_class"]/div[2]/a[2]'}
+			de3={'label':se3.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(se3.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_class"]/div[2]/a[3]'}
+			de4={'label':se4.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(se4.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_class"]/div[2]/a[4]'}
+			de5={'label':se5.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(se5.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_class"]/div[2]/a[5]'}
+			de0={'label':se0.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(se0.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_class"]/div[2]/a[6]'}
+			listetoiles=[de1,de2,de3,de4,de5,de0]
+			nextetoiles=[]
+			base1=sp.browser.current_url
+			for z in listetoiles:
+				sp.change(base1)
 
-                    if type['count']>1000:
-                        locations=sp.sopa.findAll('a',{'data-name':"di"})
-                        for loc in locations:
-                            inception2=sp.soup(str(loc),'html.parser')
-                            case2={'label':inception.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(inception.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_district"]/div[2]/a['+str(wea.index(a)+1)+']'}
-                            districts.append(case2)
-                        for district in districts:
-                            elem_type = sp.browser.find_element_by_xpath(type['id'])
-                            sp.browser.execute_script("arguments[0].scrollIntoView();", elem_type)
-                            elem_type.click()
-                            if district['count']<=1000:
+				try:
+					visio1=sp.browser.find_element_by_xpath('//*[@id="filter_hoteltype"]/div[2]/button[1]')
+					sp.browser.execute_script("arguments[0].scrollIntoView();", visio1)
+					visio1.click()
+				except:
+					pass
+				try:
+					visio2=sp.browser.find_element_by_xpath('//*[@id="filter_district"]/div[2]/button[1]')
+					sp.browser.execute_script("arguments[0].scrollIntoView();", visio2)
+					visio2.click()
+				except:
+					pass
+				try:
+					visio3=sp.browser.find_element_by_xpath('//*[@id="filter_hoteltype"]/div[2]/button[1]')
+					sp.browser.execute_script("arguments[0].scrollIntoView();", visio3)
+					visio3.click()
+				except:
+					pass
 
-                                with open(filename4,"a") as flog:
-                                    options=z['label']+'//'+type['label']+'//'+district['label']
-                                    print('Fetching : ',x,options, file=flog)
-                                with open(filename3,'a') as f3:
-                                    f3.write(x)
-                                    f3.write('\n')
-                                urlfetch()
-                                element = WebDriverWait(sp.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
-                                click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
-                                sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
-                                click_element.click()
-                                while True:
-                                    try:
-                                        url_0=str(sp.browser.current_url)
-                                        urlfetch()
-                                        timeout = time.time() + 45
-                                        element = WebDriverWait(sp.browser, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
-                                        click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
-                                        sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
-                                        click_element.click()
-                                        time.sleep(4)
-                                        url_1=str(sp.browser.current_url)
-                                    except:
-                                        if len(sp.browser.find_elements_by_css_selector("[title^='Page suivante']"))>0:
-                                            sp.close_session()
-                                            sp.browser.quit()
-                                            raise Exception("Failed at pressing next-page button-Timeout")
-                                            break
-                                        else:
-                                            sp.close_session()
-                                            sp.browser.quit()
-                                            raise Exception("Failed at pressing next-page button-Button not present...Check for completion")
-                                            break
+				time.sleep(2)
+				sp.data()
+				elem = sp.browser.find_element_by_xpath(z['id'])
+				sp.browser.execute_script("arguments[0].scrollIntoView();", elem)
+				elem.click()
+				time.sleep(2)
+				if z['count']<=1000:
 
-                                    if url_0==url_1:
-                                        break
+					with open(filename4,"a") as flog:
+						options=z['label']
+						print('Fetching : ',x,options, file=flog)
+					with open(filename3,'a') as f3:
+						f3.write(x)
+						f3.write('\n')
+					urlfetch()
+					time.sleep(1)
+					try:
+						element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+					except:
+						try:
+							sp.browser.refresh()
+							element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+						except:
+							continue
+					try:
+						time.sleep(2)
+						click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+						sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+						click_element.click()
+					except:
+						browser.refresh()
+						time.sleep(2)
+						click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+						sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+						click_element.click()
 
-                            if district['count']>1000:
-                                with open(filename4,"a") as flog:
-                                    options=z['label']+'//'+type['label']+'//'+district['label']
-                                    print('Fetching : ',x,options, file=flog)
-                                with open(filename3,'a') as f3:
-                                    f3.write(x)
-                                    f3.write('\n')
+					while True:
+						try:
+							url_0=str(sp.browser.current_url)
+							urlfetch()
+							time.sleep(1)
+							timeout = time.time() + 45
+							try:
+								element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+							except:
+								try:
+									sp.browser.refresh()
+									element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+								except:
+									continue
+							try:
+								time.sleep(2)
+								click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+								sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+								click_element.click()
+							except:
+								browser.refresh()
+								time.sleep(2)
+								click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+								sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+								click_element.click()
+							#time.sleep(4)
+							url_1=str(sp.browser.current_url)
+						except:
+							if len(sp.browser.find_elements_by_css_selector("[title^='Page suivante']"))>0:
+								raise Exception("Failed at pressing next-page button-Timeout")
+								break
+							else:
+								raise Exception("Failed at pressing next-page button-Button not present...Check for completion")
+								break
+
+						if url_0==url_1:
+							break
+				if z['count']>1000:
+					sp.data()
+					base2=sp.browser.current_url
+					types=sp.sopa.findAll('a',{'data-name':"ht_id"})
+					typesh=[]
+					for type in types:
+						inception=sp.soup(str(type),'html.parser')
+						case={'label':inception.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(inception.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_hoteltype"]/div[2]/a['+str(types.index(type)+1)+']'}
+						typesh.append(case)
+					for type in typesh:
+						sp.change(base2)
+
+						try:
+							visio1=sp.browser.find_element_by_xpath('//*[@id="filter_hoteltype"]/div[2]/button[1]')
+							sp.browser.execute_script("arguments[0].scrollIntoView();", visio1)
+							visio1.click()
+						except:
+							pass
+						try:
+							visio2=sp.browser.find_element_by_xpath('//*[@id="filter_district"]/div[2]/button[1]')
+							sp.browser.execute_script("arguments[0].scrollIntoView();", visio2)
+							visio2.click()
+						except:
+							pass
+						try:
+							visio3=sp.browser.find_element_by_xpath('//*[@id="filter_hoteltype"]/div[2]/button[1]')
+							sp.browser.execute_script("arguments[0].scrollIntoView();", visio3)
+							visio3.click()
+						except:
+							pass
+
+						time.sleep(2)
+						elem_type = sp.browser.find_element_by_xpath(type['id'])
+						sp.browser.execute_script("arguments[0].scrollIntoView();", elem_type)
+						elem_type.click()
+						time.sleep(2)
+						if type['count']<=1000:
+
+							with open(filename4,"a") as flog:
+								options=z['label']+'//'+type['label']
+								print('Fetching : ',x,options, file=flog)
+							with open(filename3,'a') as f3:
+								f3.write(x)
+								f3.write('\n')
+							urlfetch()
+							time.sleep(1)
+							try:
+								element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+							except:
+								try:
+									sp.browser.refresh()
+									element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+								except:
+									continue
+							try:
+								time.sleep(2)
+								click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+								sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+								click_element.click()
+							except:
+								browser.refresh()
+								time.sleep(2)
+								click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+								sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+								click_element.click()
+
+							while True:
+								try:
+									url_0=str(sp.browser.current_url)
+									urlfetch()
+									time.sleep(1)
+									timeout = time.time() + 45
+									try:
+										element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+									except:
+										try:
+											sp.browser.refresh()
+											element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+										except:
+											continue
+									try:
+										time.sleep(2)
+										click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+										sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+										click_element.click()
+									except:
+										sp.browser.refresh()
+										time.sleep(2)
+										click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+										sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+										click_element.click()
+									#time.sleep(4)
+									url_1=str(sp.browser.current_url)
+								except:
+									if len(sp.browser.find_elements_by_css_selector("[title^='Page suivante']"))>0:
+										raise Exception("Failed at pressing next-page button-Timeout")
+										break
+									else:
+										raise Exception("Failed at pressing next-page button-Button not present...Check for completion")
+										break
+
+								if url_0==url_1:
+									break
+
+						if type['count']>1000:
+							sp.data()
+							base3=sp.browser.current_url
+							locations=sp.sopa.findAll('a',{'data-name':"di"})
+							districts=[]
+							for loc in locations:
+								inception2=sp.soup(str(loc),'html.parser')
+								case2={'label':inception2.findAll('span',{'class':'filter_label'})[0].text.strip(),'count':int(inception2.findAll('span',{'class':'filter_count'})[0].text.strip()),'id':'//*[@id="filter_district"]/div[2]/a['+str(locations.index(loc)+1)+']'}
+								#print(case2)
+								districts.append(case2)
+							for district in districts:
+								#print(base3)
+								sp.change(base3)
+
+								try:
+									visio1=sp.browser.find_element_by_xpath('//*[@id="filter_hoteltype"]/div[2]/button[1]')
+									sp.browser.execute_script("arguments[0].scrollIntoView();", visio1)
+									visio1.click()
+								except:
+									pass
+								try:
+									visio2=sp.browser.find_element_by_xpath('//*[@id="filter_district"]/div[2]/button[1]')
+									sp.browser.execute_script("arguments[0].scrollIntoView();", visio2)
+									visio2.click()
+								except:
+									pass
+								try:
+									visio3=sp.browser.find_element_by_xpath('//*[@id="filter_hoteltype"]/div[2]/button[1]')
+									sp.browser.execute_script("arguments[0].scrollIntoView();", visio3)
+									visio3.click()
+								except:
+									pass
+
+								time.sleep(2)
+								elem_district = sp.browser.find_element_by_xpath(district['id'])
+								sp.browser.execute_script("arguments[0].scrollIntoView();", elem_district)
+								elem_district.click()
+								time.sleep(2)
+								if district['count']<=1000:
+									try:
+										with open(filename4,"a") as flog:
+											options=z['label']+'//'+type['label']+'//'+district['label']
+											print('Fetching : ',x,options, file=flog)
+										with open(filename3,'a') as f3:
+											f3.write(x)
+											f3.write('\n')
+										urlfetch()
+										time.sleep(1)
+										try:
+											element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+										except:
+											try:
+												sp.browser.refresh()
+												element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+											except:
+												continue
+										try:
+											time.sleep(2)
+											click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+											sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+											click_element.click()
+										except:
+											sp.browser.refresh()
+											time.sleep(2)
+											click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+											sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+											click_element.click()
+
+										while True:
+											try:
+												url_0=str(sp.browser.current_url)
+												urlfetch()
+												time.sleep(1)
+												timeout = time.time() + 45
+												try:
+													element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+												except:
+													try:
+														sp.browser.refresh()
+														element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+													except:
+														continue
+
+												try:
+													time.sleep(2)
+													click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+													sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+													click_element.click()
+
+												except:
+													sp.browser.refresh()
+													time.sleep(2)
+													click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+													sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+													click_element.click()
+
+												#time.sleep(4)
+												url_1=str(sp.browser.current_url)
+											except:
+												if len(sp.browser.find_elements_by_css_selector("[title^='Page suivante']"))>0:
+													raise Exception("Failed at pressing next-page button-Timeout")
+													break
+												else:
+													raise Exception("Failed at pressing next-page button-Button not present...Check for completion")
+													break
+											if url_0==url_1:
+												break
+									except:
+										options=z['label']+'//'+type['label']+'//'+district['label']
+										print('Problem with',x,'options:',options)
+										continue
 
 
-    sp.close_session()
-    sp.browser.quit()
-    
+
+								if district['count']>1000:
+									with open(filename4,"a") as flog:
+										options=z['label']+'//'+type['label']+'//'+district['label']
+										print('More than 1000 : ',x,options, file=flog)
+									with open(filename3,'a') as f3:
+										f3.write(x)
+										f3.write('\n')
+									continue
+	except:
+		#sp.close_session()
+		sp.browser.quit()
+		print('Did not complete:',x)
+
+
+	#sp.close_session()
+	sp.browser.quit()
+
 # Run algorithm 30 concurrent browsers
 
 
