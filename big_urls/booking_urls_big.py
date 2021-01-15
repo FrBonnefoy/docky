@@ -292,24 +292,7 @@ def searchcityurl(x):
 		#smallville=sp.scrape('span',{'class':'bui_font_strong'})
 		#smallville=smallville.now()
 
-		try:
-			visio1=sp.browser.find_element_by_xpath('//*[@id="filter_hoteltype"]/div[2]/button[1]')
-			sp.browser.execute_script("arguments[0].scrollIntoView();", visio1)
-			visio1.click()
-		except:
-			pass
-		try:
-			visio2=sp.browser.find_element_by_xpath('//*[@id="filter_district"]/div[2]/button[1]')
-			sp.browser.execute_script("arguments[0].scrollIntoView();", visio2)
-			visio2.click()
-		except:
-			pass
-		try:
-			visio3=sp.browser.find_element_by_xpath('//*[@id="filter_hoteltype"]/div[2]/button[1]')
-			sp.browser.execute_script("arguments[0].scrollIntoView();", visio3)
-			visio3.click()
-		except:
-			pass
+
 
 		if element_c_seuil<=1000:
 			with open(filename4,"a") as flog:
@@ -380,6 +363,24 @@ def searchcityurl(x):
 
 
 		elif element_c_seuil>1000:
+			try:
+				visio1=sp.browser.find_element_by_xpath('//*[@id="filter_hoteltype"]/div[2]/button[1]')
+				sp.browser.execute_script("arguments[0].scrollIntoView();", visio1)
+				visio1.click()
+			except:
+				pass
+			try:
+				visio2=sp.browser.find_element_by_xpath('//*[@id="filter_district"]/div[2]/button[1]')
+				sp.browser.execute_script("arguments[0].scrollIntoView();", visio2)
+				visio2.click()
+			except:
+				pass
+			try:
+				visio3=sp.browser.find_element_by_xpath('//*[@id="filter_hoteltype"]/div[2]/button[1]')
+				sp.browser.execute_script("arguments[0].scrollIntoView();", visio3)
+				visio3.click()
+			except:
+				pass
 			sp.data()
 			e1=str(sp.sopa.findAll('a',{'data-id':"class-1"}))
 			e2=str(sp.sopa.findAll('a',{'data-id':"class-2"}))
