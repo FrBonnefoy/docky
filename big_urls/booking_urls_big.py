@@ -75,7 +75,7 @@ fhandle4.close()
 #Get country urls
 print('\n','Fetching country urls...','\n')
 with open(filename4,"a") as flog:
-    print('\n','Fetching country urls...','\n',file=flog)
+	print('\n','Fetching country urls...','\n',file=flog)
 sp.open_session_firefox()
 sp.browser.get("https://www.booking.com/destination.fr.html")
 urls_1=sp.scrape('a',{'class':'dest-sitemap__subsublist-link'})
@@ -83,74 +83,74 @@ urls_1=urls_1.now()
 url_start=[]
 url_a_city=[]
 for x in urls_1:
-    try:
-        url_start.append(re.sub(r'(\?)(.+)','','https://www.booking.com'+str(x['href'])))
-        with open(filename5,"a") as f5:
-            print(re.sub(r'(\?)(.+)','','https://www.booking.com'+str(x['href'])),file=f5)
-    except:
-        url_start.append('https://www.booking.com'+str(x['href']))
-        with open(filename5,"a") as f5:
-            print('https://www.booking.com'+str(x['href']),file=f5)
+	try:
+		url_start.append(re.sub(r'(\?)(.+)','','https://www.booking.com'+str(x['href'])))
+		with open(filename5,"a") as f5:
+			print(re.sub(r'(\?)(.+)','','https://www.booking.com'+str(x['href'])),file=f5)
+	except:
+		url_start.append('https://www.booking.com'+str(x['href']))
+		with open(filename5,"a") as f5:
+			print('https://www.booking.com'+str(x['href']),file=f5)
 
 sp.close_session()
 sp.browser.quit()
 with open(filename5a,"a") as f5a:
-    print(url_start,file=f5a)
+	print(url_start,file=f5a)
 #Get city urls
 def bookgeturlcity(x):
-    timeout = time.time() + 60*5
-    while True:
-        if time.time() > timeout:
-            raise Exception("Timeout (5 minutes)")
-            break
-        try:
-            sp.browser.close()
-            sp.browser.quit()
-        except:
-            pass
-        sp.open_session_firefox()
-        sp.browser.get(x)
-        time.sleep(randint(5,10))
-        urls_2=sp.scrape('a',{'class':'dest-sitemap__subsublist-link'})
-        urls_2_vf=urls_2.now()
-        try:
-            test=urls_2_vf[0]['href']
-        except:
-            time.sleep(randint(10,15))
-            continue
-        for y in urls_2_vf:
-            try:
-                url_a_city.append(re.sub(r'(\?)(.+)','','https://www.booking.com'+str(y['href'])))
-                with open(filename6,"a") as f6:
-                    print(re.sub(r'(\?)(.+)','','https://www.booking.com'+str(y['href'])),file=f6)
+	timeout = time.time() + 60*5
+	while True:
+		if time.time() > timeout:
+			raise Exception("Timeout (5 minutes)")
+			break
+		try:
+			sp.browser.close()
+			sp.browser.quit()
+		except:
+			pass
+		sp.open_session_firefox()
+		sp.browser.get(x)
+		time.sleep(randint(5,10))
+		urls_2=sp.scrape('a',{'class':'dest-sitemap__subsublist-link'})
+		urls_2_vf=urls_2.now()
+		try:
+			test=urls_2_vf[0]['href']
+		except:
+			time.sleep(randint(10,15))
+			continue
+		for y in urls_2_vf:
+			try:
+				url_a_city.append(re.sub(r'(\?)(.+)','','https://www.booking.com'+str(y['href'])))
+				with open(filename6,"a") as f6:
+					print(re.sub(r'(\?)(.+)','','https://www.booking.com'+str(y['href'])),file=f6)
 
-            except:
-                url_a_city.append('https://www.booking.com'+str(y['href']))
-                with open(filename6,"a") as f6:
-                    print('https://www.booking.com'+str(y['href']),file=f6)
-        break
+			except:
+				url_a_city.append('https://www.booking.com'+str(y['href']))
+				with open(filename6,"a") as f6:
+					print('https://www.booking.com'+str(y['href']),file=f6)
+		break
 
 # Execute requests with 20 threads max
 print('\n','Fetching city urls...','\n')
 with open(filename4,"a") as flog:
-    print('\n','Fetching city urls...','\n',file=flog)
+	print('\n','Fetching city urls...','\n',file=flog)
 
 with concurrent.futures.ProcessPoolExecutor(max_workers=25) as executor:
-    future_to_url = {executor.submit(bookgeturlcity, url): url for url in url_start}
-    for future in tqdm(concurrent.futures.as_completed(future_to_url),total=len(future_to_url)):
-        url = future_to_url[future]
-        try:
-            data = future.result()
-        except Exception as exc:
-            with open(filename4,"a") as flog:
-                print('%r generated an exception: %s' % (url, exc),file=flog)
-        else:
-            with open(filename4,"a") as flog:
-                print('%r page is completed' % url,file=flog)
+	future_to_url = {executor.submit(bookgeturlcity, url): url for url in url_start}
+	for future in tqdm(concurrent.futures.as_completed(future_to_url),total=len(future_to_url)):
+		url = future_to_url[future]
+		try:
+			data = future.result()
+		except Exception as exc:
+			with open(filename4,"a") as flog:
+				print('%r generated an exception: %s' % (url, exc),file=flog)
+		else:
+			with open(filename4,"a") as flog:
+				print('%r page is completed' % url,file=flog)
 url_a_city=list(map(lambda x: x.replace('/destination',''),url_a_city))
 url_a_city=list(map(lambda x: re.sub(r'(\?)(.+)','',x),url_a_city))
 with open(filename6a,"a") as f6a:
-    print(url_a_city,file=f6a)
+	print(url_a_city,file=f6a)
 
 continue_=input('\nContinue?\n')
 ========Modified version for France- this part is commented out (inactive)=========
@@ -162,16 +162,16 @@ cwd = os.getcwd()
 url_folder=str(cwd)+r"\urls"
 read_files_flag = glob.glob(url_folder+r"\booking_flag_url1*")
 with open(url_folder+r'\booking_flag_url.txt','w') as fconsolidated:
-    for file in read_files_flag:
-        with open(file) as f:
-            flags=f.readlines()
-            flags=list(map(lambda x: x.strip(),flags))
-            flags=list(filter(lambda x: 'www.booking.com/city' in x,flags))
-            for url in flags:
-                print(url, file=fconsolidated)
+	for file in read_files_flag:
+		with open(file) as f:
+			flags=f.readlines()
+			flags=list(map(lambda x: x.strip(),flags))
+			flags=list(filter(lambda x: 'www.booking.com/city' in x,flags))
+			for url in flags:
+				print(url, file=fconsolidated)
 
 with open(url_folder+r'\booking_flag_url.txt','r') as fconsolidated:
-    url_a_city=fconsolidated.readlines()
+	url_a_city=fconsolidated.readlines()
 
 url_a_city=list(map(lambda x: x.strip(),url_a_city))
 url_a_city=list(dict.fromkeys(url_a_city))
@@ -182,15 +182,15 @@ url_a_city=list(dict.fromkeys(url_a_city))
 
 read_files_logs = glob.glob("logs1*")
 with open("consolidatedlog.txt", "w") as outfile:
-    for f in read_files_logs:
-        with open(f, "r") as infile:
-            outfile.write(infile.read())
+	for f in read_files_logs:
+		with open(f, "r") as infile:
+			outfile.write(infile.read())
 
 #Import logs
 
 flogname='consolidatedlog.txt'
 with open(flogname) as flogdone:
-    done_urls=flogdone.readlines()
+	done_urls=flogdone.readlines()
 
 done_urls=list(map(lambda x: x.strip(),done_urls))
 done_urls=list(map(lambda x: x.replace('\\n',''),done_urls))
@@ -205,17 +205,17 @@ url_a_city=sorted(url_a_city)
 
 #Define subfunction
 def urlfetch():
-    object_=sp.scrape('a',{'class':'js-sr-hotel-link hotel_name_link url'})
-    object_=object_.now()
-    for a in object_:
-        urlhotel='https://www.booking.com'+a['href'].strip()
-        try:
-            urlhotel=re.sub(r'(\?)(.+)\s(.+)','',urlhotel)
-        except:
-            pass
-        with open(filename2,'a') as f2:
-            f2.write(urlhotel)
-            f2.write('\n')
+	object_=sp.scrape('a',{'class':'js-sr-hotel-link hotel_name_link url'})
+	object_=object_.now()
+	for a in object_:
+		urlhotel='https://www.booking.com'+a['href'].strip()
+		try:
+			urlhotel=re.sub(r'(\?)(.+)\s(.+)','',urlhotel)
+		except:
+			pass
+		with open(filename2,'a') as f2:
+			f2.write(urlhotel)
+			f2.write('\n')
 
 # Define main function
 
@@ -223,25 +223,25 @@ def searchcityurl(x):
 	try:
 		for counter in range(5):
 			try:
-                time.sleep(2)
-                sp.open_session_firefox()
+				time.sleep(2)
+				sp.open_session_firefox()
 				#sp.browser.set_window_size(1920, 1080)
 				#sp.browser.execute_script("document.body.style.zoom='25%'")
 				#sp.browser.execute_script("document.body.style.transform = 'scale(0.25)'")
-                time.sleep(2)
-                sp.change(x)
-                time.sleep(2)
-                break
+				time.sleep(2)
+				sp.change(x)
+				time.sleep(2)
+				break
 			except:
-                time.sleep(2)
-                sp.browser.quit()
-                time.sleep(2)
-                '''
-                PROCNAME = "geckodriver"
+				time.sleep(2)
+				sp.browser.quit()
+				time.sleep(2)
+				'''
+				PROCNAME = "geckodriver"
 				for proc in psutil.process_iter():
 					 if proc.name() == PROCNAME:
 						  proc.kill()
-                          '''
+						  '''
 		#sp.browser.execute_script("document.body.style.zoom='25%'")
 		time.sleep(1)
 		c=sp.browser.find_elements_by_id('onetrust-reject-all-handler')
@@ -641,9 +641,9 @@ def searchcityurl(x):
 	except:
 		#sp.close_session()
 		sp.browser.quit()
-        with open(filename4,"a") as flog:
-            #print('\n','Fetching individual urls...','\n',file=flog)
-		    print('Did not complete:',x,file=flog)
+		with open(filename4,"a") as flog:
+			#print('\n','Fetching individual urls...','\n',file=flog)
+			print('Did not complete:',x,file=flog)
 
 
 	#sp.close_session()
@@ -654,18 +654,18 @@ def searchcityurl(x):
 
 print('\n','Fetching individual urls...','\n')
 with open(filename4,"a") as flog:
-    print('\n','Fetching individual urls...','\n',file=flog)
+	print('\n','Fetching individual urls...','\n',file=flog)
 
 
 with concurrent.futures.ProcessPoolExecutor(max_workers=5) as executor:
-    future_to_url = {executor.submit(searchcityurl, url): url for url in url_a_city}
-    for future in tqdm(concurrent.futures.as_completed(future_to_url),total=len(future_to_url)):
-        url = future_to_url[future]
-        try:
-            data = future.result()
-        except Exception as exc:
-            with open(filename4,"a") as flog:
-                print('%r generated an exception: %s' % (url, exc),file=flog)
-        else:
-            with open(filename4,"a") as flog:
-                print('%r page is completed' % url,file=flog)
+	future_to_url = {executor.submit(searchcityurl, url): url for url in url_a_city}
+	for future in tqdm(concurrent.futures.as_completed(future_to_url),total=len(future_to_url)):
+		url = future_to_url[future]
+		try:
+			data = future.result()
+		except Exception as exc:
+			with open(filename4,"a") as flog:
+				print('%r generated an exception: %s' % (url, exc),file=flog)
+		else:
+			with open(filename4,"a") as flog:
+				print('%r page is completed' % url,file=flog)
