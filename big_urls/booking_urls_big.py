@@ -294,7 +294,73 @@ def searchcityurl(x):
 		except:
 			pass
 
-		if element_c_seuil>1000:
+        if element_c_seuil<=1000:
+            with open(filename4,"a") as flog:
+                print('Fetching : ',x,'with less than 1000 results',file=flog)
+            with open(filename3,'a') as f3:
+                f3.write(x)
+                f3.write('\n')
+            urlfetch()
+			time.sleep(1)
+            try:
+                element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+            except:
+                try:
+                    sp.browser.refresh()
+                    element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+                except:
+                    continue
+            try:
+                time.sleep(2)
+                click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+                sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+                click_element.click()
+            except:
+                browser.refresh()
+                time.sleep(2)
+                click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+                sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+                click_element.click()
+			while True:
+				try:
+					url_0=str(sp.browser.current_url)
+					urlfetch()
+					time.sleep(1)
+					timeout = time.time() + 45
+					try:
+						element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+					except:
+					    try:
+							sp.browser.refresh()
+							element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+						except:
+							continue
+					try:
+						time.sleep(2)
+						click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+						sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+						click_element.click()
+					except:
+						browser.refresh()
+						time.sleep(2)
+						click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+						sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+						click_element.click()
+						#time.sleep(4)
+						url_1=str(sp.browser.current_url)
+				except:
+					if len(sp.browser.find_elements_by_css_selector("[title^='Page suivante']"))>0:
+						raise Exception("Failed at pressing next-page button-Timeout")
+						break
+					else:
+						raise Exception("Failed at pressing next-page button-Button not present...Check for completion")
+						break
+
+				if url_0==url_1:
+					break
+
+
+		elif element_c_seuil>1000:
 			sp.data()
 			e1=str(sp.sopa.findAll('a',{'data-id':"class-1"}))
 			e2=str(sp.sopa.findAll('a',{'data-id':"class-2"}))
@@ -349,7 +415,7 @@ def searchcityurl(x):
 
 					with open(filename4,"a") as flog:
 						options=z['label']
-						print('Fetching : ',x,options, file=flog)
+						print('Fetching : ',x,'with more than 1000 results',options, file=flog)
 					with open(filename3,'a') as f3:
 						f3.write(x)
 						f3.write('\n')
