@@ -261,14 +261,26 @@ def searchcityurl(x):
 		time.sleep(1)
 		element_=sp.scrape('h1',{'class':'sorth1'})
 		element_=element_.now()
-		element_=element_[0].text
-		element_=element_.replace(' ','').strip()
-		try:
-			element_=element_.replace('\xa0','').replace(' ','').strip()
-		except:
-			pass
-		element_c=re.findall(r"(\d+) établissements trouvés",element_)
-		element_c_seuil=int(element_c[0])
+        if len(element_)>0:
+    		element_=element_[0].text
+    		element_=element_.replace(' ','').strip()
+    		try:
+    			element_=element_.replace('\xa0','').replace(' ','').strip()
+    		except:
+    			pass
+    		element_c=re.findall(r"(\d+)",element_)
+    		element_c_seuil=int(element_c[0])
+        elif len(element_)=0:
+            element_=sp.scrape('h2',{'class':'ski-accommodation__title'})
+            element_=element_.now()
+            element_=element_[0].text
+    		element_=element_.replace(' ','').strip()
+            try:
+    			element_=element_.replace('\xa0','').replace(' ','').strip()
+    		except:
+    			pass
+            element_c=re.findall(r"(\d+)établissementstrouvés",element_)
+    		element_c_seuil=int(element_c[0])
 		with open(filename4,"a") as flog:
 			print(element_c_seuil," etablissements sur l'url: ",x)
 			print(element_c_seuil," etablissements sur l'url: ",x,file=flog)
