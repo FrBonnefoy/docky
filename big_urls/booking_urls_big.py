@@ -294,33 +294,33 @@ def searchcityurl(x):
 		except:
 			pass
 
-        if element_c_seuil<=1000:
-            with open(filename4,"a") as flog:
-                print('Fetching : ',x,'with less than 1000 results',file=flog)
-            with open(filename3,'a') as f3:
-                f3.write(x)
-                f3.write('\n')
-            urlfetch()
+		if element_c_seuil<=1000:
+			with open(filename4,"a") as flog:
+				print('Fetching : ',x,'with less than 1000 results',file=flog)
+			with open(filename3,'a') as f3:
+				f3.write(x)
+				f3.write('\n')
+			urlfetch()
 			time.sleep(1)
-            try:
-                element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
-            except:
-                try:
-                    sp.browser.refresh()
-                    element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
-                except:
-                    continue
-            try:
-                time.sleep(2)
-                click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
-                sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
-                click_element.click()
-            except:
-                browser.refresh()
-                time.sleep(2)
-                click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
-                sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
-                click_element.click()
+			try:
+				element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+			except:
+				try:
+					sp.browser.refresh()
+					element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+				except:
+					continue
+			try:
+				time.sleep(2)
+				click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+				sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+				click_element.click()
+			except:
+				browser.refresh()
+				time.sleep(2)
+				click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+				sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+				click_element.click()
 			while True:
 				try:
 					url_0=str(sp.browser.current_url)
@@ -330,7 +330,7 @@ def searchcityurl(x):
 					try:
 						element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
 					except:
-					    try:
+						try:
 							sp.browser.refresh()
 							element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
 						except:
