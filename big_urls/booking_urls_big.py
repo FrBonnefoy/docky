@@ -260,7 +260,7 @@ def searchcityurl(x):
 		except:
 			b=sp.browser.find_elements_by_class_name('ski-accommodation__title')
 		sp.browser.execute_script("arguments[0].scrollIntoView();", b[0])
-		b[0].click()
+		#b[0].click()
 		time.sleep(1)
 		element_=sp.scrape('h1',{'class':'sorth1'})
 		element_=element_.now()
