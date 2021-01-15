@@ -257,10 +257,10 @@ def searchcityurl(x):
 		time.sleep(1)
 		try:
 			b=sp.browser.find_elements_by_class_name('sorth1')
-            sp.browser.execute_script("arguments[0].scrollIntoView();", b[0])
+			sp.browser.execute_script("arguments[0].scrollIntoView();", b[0])
 		except:
 			b=sp.browser.find_elements_by_class_name('ski-accommodation__title')
-            sp.browser.execute_script("arguments[0].scrollIntoView();", b[0])
+			sp.browser.execute_script("arguments[0].scrollIntoView();", b[0])
 
 		#b[0].click()
 		time.sleep(1)
