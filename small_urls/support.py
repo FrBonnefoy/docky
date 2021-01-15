@@ -9,12 +9,17 @@ import time
 import requests
 import warnings
 warnings.filterwarnings('ignore', message='Unverified HTTPS request')
-from IPython.display import Image
+#from IPython.display import Image
 import os
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
+import glob
+#import csv
+#from xlsxwriter.workbook import Workbook
+import pandas as pd
+#from IPython.display import display
+import re
 current_path=os.getcwd()
 
 
@@ -24,9 +29,9 @@ http_proxy  = "http://127.0.0.1:24000"
 https_proxy = "https://127.0.0.1:24000"
 ftp_proxy   = "ftp://127.0.0.1:24000"
 
-proxyDict = { 
-              "http"  : http_proxy, 
-              "https" : https_proxy, 
+proxyDict = {
+              "http"  : http_proxy,
+              "https" : https_proxy,
               "ftp"   : ftp_proxy
             }
 
@@ -39,7 +44,7 @@ def req(x):
 
 def help():
 
-    print( ''' 
+    print( '''
 open_session() : Ouvre une nouvelle séance de chrome avec une nouvelle adresse IP
 
 close_session() : Fermer la session avant de reouvrir une nouvelle avec une nouvelle adresse IP (économise des ressources)
@@ -63,7 +68,7 @@ geturls(x): Capturer les urls dans le récipient html specifié par scrape dans 
 printhtml(x): Imprimer le code html de tous les récipients qui s'allignent avec la définition donnée par scrape.
             ''')
 
-    
+
 def image(x):
     Image(filename=x)
 
@@ -73,20 +78,20 @@ def open_session_firefox_no_proxy():
     options.add_argument("--headless")
     options.add_argument("--window-size=1280×720")
     #options.add_argument('start-maximized')
-    profile = webdriver.FirefoxProfile() 
-    profile.add_extension(current_path+"/disable_webrtc-1.0.23-an+fx.xpi")
-    #profile.add_extension(current_path+"/adblock_for_firefox-4.24.1-fx.xpi") 
+    profile = webdriver.FirefoxProfile()
+    #profile.add_extension(current_path+"/disable_webrtc-1.0.23-an+fx.xpi")
+    #profile.add_extension(current_path+"/adblock_for_firefox-4.24.1-fx.xpi")
     #profile.add_extension(current_path+"/image_block-5.0-fx.xpi")
     #profile.add_extension(current_path+"/ublock_origin-1.31.0-an+fx.xpi")
     profile.DEFAULT_PREFERENCES['frozen']["media.peerconnection.enabled" ] = False
     profile.set_preference("media.peerconnection.enabled", False)
     profile.set_preference("permissions.default.image", 2)
     profile.update_preferences()
-    browser = webdriver.Firefox(profile,options=options)    
-    browser.install_addon(current_path+"/disable_webrtc-1.0.23-an+fx.xpi", temporary=True)
+    browser = webdriver.Firefox(profile,options=options)
+    #browser.install_addon(current_path+"/disable_webrtc-1.0.23-an+fx.xpi", temporary=True)
     #browser.install_addon(current_path+"/image_block-5.0-fx.xpi", temporary=True)
     #browser.install_addon(current_path+"/ublock_origin-1.31.0-an+fx.xpi", temporary=True)
-    
+
 def open_session_firefox():
     global browser
     PROXY="127.0.0.1:24001"
@@ -101,21 +106,21 @@ def open_session_firefox():
     options.add_argument("--headless")
     options.add_argument("--window-size=1024x768")
     #options.add_argument('start-maximized')
-    profile = webdriver.FirefoxProfile() 
-    profile.add_extension(current_path+"/disable_webrtc-1.0.23-an+fx.xpi")
-    #profile.add_extension(current_path+"/adblock_for_firefox-4.24.1-fx.xpi") 
-    profile.add_extension(current_path+"/image_block-5.0-fx.xpi")
-    profile.add_extension(current_path+"/ublock_origin-1.31.0-an+fx.xpi")
+    profile = webdriver.FirefoxProfile()
+    #profile.add_extension(current_path+"/disable_webrtc-1.0.23-an+fx.xpi")
+    #profile.add_extension(current_path+"/adblock_for_firefox-4.24.1-fx.xpi")
+    #profile.add_extension(current_path+"/image_block-5.0-fx.xpi")
+    #profile.add_extension(current_path+"/ublock_origin-1.31.0-an+fx.xpi")
     profile.DEFAULT_PREFERENCES['frozen']["media.peerconnection.enabled" ] = False
     profile.set_preference("media.peerconnection.enabled", False)
     profile.set_preference("permissions.default.image", 2)
     profile.update_preferences()
     browser = webdriver.Firefox(profile,options=options)
-    browser.install_addon(current_path+"/disable_webrtc-1.0.23-an+fx.xpi", temporary=True)
-    browser.install_addon(current_path+"/image_block-5.0-fx.xpi", temporary=True)
-    browser.install_addon(current_path+"/ublock_origin-1.31.0-an+fx.xpi", temporary=True)
+    #browser.install_addon(current_path+"/disable_webrtc-1.0.23-an+fx.xpi", temporary=True)
+    #browser.install_addon(current_path+"/image_block-5.0-fx.xpi", temporary=True)
+    #browser.install_addon(current_path+"/ublock_origin-1.31.0-an+fx.xpi", temporary=True)
 
-    
+
 def open_session():
     global browser
     PROXY = "127.0.0.1:24001"
@@ -157,7 +162,7 @@ def scroll():
 def change(x):
 	browser.get(x)
 
-    
+
 class scrape:
     def __init__(self,x,y=None):
         self.x = x
@@ -169,7 +174,7 @@ class scrape:
             return sopa.findAll(self.x)
         else:
             return sopa.findAll(self.x,self.y)
-        
+
 class scrape_light:
     def __init__(self,x,y=None):
         self.x = x
@@ -186,7 +191,7 @@ class scrape_light:
 def printext(x):
     for a in x:
         print(a.text)
-        
+
 
 def geturls(x):
     global urls
