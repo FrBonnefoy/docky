@@ -302,41 +302,25 @@ def searchcityurl(x):
 				f3.write('\n')
 			urlfetch()
 			time.sleep(1)
-			for counter_refresh in range(5):
-				try:
-					element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
-				except:
-					try:
-						sp.browser.refresh()
-						time.sleep(2)
-						element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
-					except:
-						continue
-			try:
-				time.sleep(2)
-				click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
-				sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
-				click_element.click()
-			except:
-				browser.refresh()
-				time.sleep(2)
-				click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
-				sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
-				click_element.click()
-			while True:
-				try:
-					url_0=str(sp.browser.current_url)
-					urlfetch()
-					time.sleep(1)
-					timeout = time.time() + 45
-					try:
-						element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
-					except:
+			description=sp.scrape('li',{'class':'bui-pagination__item sr_pagination_item'})
+			lecture=description.now()
+
+			if len(lecture)>0:
+    			max_pages=[]
+    			for page in lecture:
+        			max_pages.append(int(re.findall(r'(\d+)',page.text)[0]))
+        			max_page=max(max_pages)
+				if max_page>1:
+					for counter_refresh in range(5):
 						try:
-							sp.browser.refresh()
 							element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
 						except:
-							break
+							try:
+								sp.browser.refresh()
+								time.sleep(2)
+								element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+							except:
+								continue
 					try:
 						time.sleep(2)
 						click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
@@ -348,18 +332,43 @@ def searchcityurl(x):
 						click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
 						sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
 						click_element.click()
-					#time.sleep(4)
-					url_1=str(sp.browser.current_url)
-				except:
-					if len(sp.browser.find_elements_by_css_selector("[title^='Page suivante']"))>0:
-						raise Exception("Failed at pressing next-page button-Timeout")
-						break
-					else:
-						raise Exception("Failed at pressing next-page button-Button not present...Check for completion")
-						break
+					while True:
+						try:
+							url_0=str(sp.browser.current_url)
+							urlfetch()
+							time.sleep(1)
+							timeout = time.time() + 45
+							try:
+								element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+							except:
+								try:
+									sp.browser.refresh()
+									element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+								except:
+									break
+							try:
+								time.sleep(2)
+								click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+								sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+								click_element.click()
+							except:
+								browser.refresh()
+								time.sleep(2)
+								click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
+								sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
+								click_element.click()
+							#time.sleep(4)
+							url_1=str(sp.browser.current_url)
+						except:
+							if len(sp.browser.find_elements_by_css_selector("[title^='Page suivante']"))>0:
+								raise Exception("Failed at pressing next-page button-Timeout")
+								break
+							else:
+								raise Exception("Failed at pressing next-page button-Button not present...Check for completion")
+								break
 
-				if url_0==url_1:
-					break
+						if url_0==url_1:
+							break
 
 
 		elif element_c_seuil>1000:
