@@ -267,7 +267,7 @@ def searchcityurl(x):
 			element_=element_.replace('\xa0','').replace(' ','').strip()
 		except:
 			pass
-		element_c=re.findall(r"(\d+)",element_)
+		element_c=re.findall(r"(\d+) établissements trouvés",element_)
 		element_c_seuil=int(element_c[0])
 		with open(filename4,"a") as flog:
 			print(element_c_seuil," etablissements sur l'url: ",x)
