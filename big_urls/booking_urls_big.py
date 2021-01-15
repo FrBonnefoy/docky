@@ -22,6 +22,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import psutil
 from selenium.common.exceptions import WebDriverException
+import os
 
 
 #Ignore SSL certificate errors
@@ -155,22 +156,35 @@ continue_=input('\nContinue?\n')
 ========Modified version for France- this part is commented out (inactive)=========
 '''
 
-#Generate consolited log file
+#Import flag_urls
 
-read_files = glob.glob("logs1*")
-with open("consolidatedlog.txt", "wb") as outfile:
-    for f in read_files:
-        with open(f, "rb") as infile:
-            outfile.write(infile.read())
+cwd = os.getcwd()
+url_folder=str(cwd)+r"\urls"
+read_files_flag = glob.glob(url_folder+r"\booking_flag_url1*")
+with open(url_folder+r'\booking_flag_url.txt','w') as fconsolidated:
+    for file in read_files_flag:
+        with open(file) as f:
+            flags=f.readlines()
+            flags=list(map(lambda x: x.strip(),flags))
+            flags=list(filter(lambda x: 'www.booking.com/city' in x,flags))
+            for url in flags:
+                print(url, file=fconsolidated)
 
-#Import French cities
-
-with open('master_city_url_selection.txt') as fselection:
-    url_a_city=fselection.readlines()
+with open(url_folder+r'\booking_flag_url.txt','r') as fconsolidated:
+    url_a_city=fconsolidated.readlines()
 
 url_a_city=list(map(lambda x: x.strip(),url_a_city))
+url_a_city=list(dict.fromkeys(url_a_city))
 
-url_a_city=list(map(lambda x: x.replace('/destination',''),url_a_city))
+
+
+#Generate consolited log file
+
+read_files_logs = glob.glob("logs1*")
+with open("consolidatedlog.txt", "w") as outfile:
+    for f in read_files_logs:
+        with open(f, "r") as infile:
+            outfile.write(infile.read())
 
 #Import logs
 
@@ -178,10 +192,15 @@ flogname='consolidatedlog.txt'
 with open(flogname) as flogdone:
     done_urls=flogdone.readlines()
 
+done_urls=list(map(lambda x: x.strip(),done_urls))
+done_urls=list(map(lambda x: x.replace('\\n',''),done_urls))
 done_urls=list(filter(lambda x: 'page is completed' in x or "title^='Page suivante" in x, done_urls))
 done_urls=list(map(lambda x: re.findall(r"'(.+)'",x)[0],done_urls))
+done_urls=list(map(lambda x: x.strip(),done_urls))
+done_urls=list(map(lambda x: x.replace('\\n',''),done_urls))
 url_a_city=list(set(url_a_city)-set(done_urls))
 url_a_city=sorted(url_a_city)
+
 
 
 #Define subfunction
@@ -204,19 +223,25 @@ def searchcityurl(x):
 	try:
 		for counter in range(5):
 			try:
-				sp.open_session_firefox()
+                time.sleep(2)
+                sp.open_session_firefox()
 				#sp.browser.set_window_size(1920, 1080)
 				#sp.browser.execute_script("document.body.style.zoom='25%'")
 				#sp.browser.execute_script("document.body.style.transform = 'scale(0.25)'")
-				break
+                time.sleep(2)
+                sp.change(x)
+                time.sleep(2)
+                break
 			except:
-				PROCNAME = "geckodriver"
+                time.sleep(2)
+                sp.browser.quit()
+                time.sleep(2)
+                '''
+                PROCNAME = "geckodriver"
 				for proc in psutil.process_iter():
 					 if proc.name() == PROCNAME:
 						  proc.kill()
-
-		sp.change(x)
-
+                          '''
 		#sp.browser.execute_script("document.body.style.zoom='25%'")
 		time.sleep(1)
 		c=sp.browser.find_elements_by_id('onetrust-reject-all-handler')
@@ -616,7 +641,9 @@ def searchcityurl(x):
 	except:
 		#sp.close_session()
 		sp.browser.quit()
-		print('Did not complete:',x)
+        with open(filename4,"a") as flog:
+            #print('\n','Fetching individual urls...','\n',file=flog)
+		    print('Did not complete:',x,file=flog)
 
 
 	#sp.close_session()
@@ -630,7 +657,7 @@ with open(filename4,"a") as flog:
     print('\n','Fetching individual urls...','\n',file=flog)
 
 
-with concurrent.futures.ProcessPoolExecutor(max_workers=7) as executor:
+with concurrent.futures.ProcessPoolExecutor(max_workers=5) as executor:
     future_to_url = {executor.submit(searchcityurl, url): url for url in url_a_city}
     for future in tqdm(concurrent.futures.as_completed(future_to_url),total=len(future_to_url)):
         url = future_to_url[future]
