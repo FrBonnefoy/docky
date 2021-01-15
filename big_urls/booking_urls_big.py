@@ -353,7 +353,7 @@ def searchcityurl(x):
 							sp.browser.refresh()
 							element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
 						except:
-							continue
+							break
 					try:
 						time.sleep(2)
 						click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
@@ -365,8 +365,8 @@ def searchcityurl(x):
 						click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
 						sp.browser.execute_script("arguments[0].scrollIntoView();", click_element)
 						click_element.click()
-						#time.sleep(4)
-						url_1=str(sp.browser.current_url)
+					#time.sleep(4)
+					url_1=str(sp.browser.current_url)
 				except:
 					if len(sp.browser.find_elements_by_css_selector("[title^='Page suivante']"))>0:
 						raise Exception("Failed at pressing next-page button-Timeout")
