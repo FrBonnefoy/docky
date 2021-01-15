@@ -302,14 +302,16 @@ def searchcityurl(x):
 				f3.write('\n')
 			urlfetch()
 			time.sleep(1)
-			try:
-				element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
-			except:
+			for counter_refresh in range(5):
 				try:
-					sp.browser.refresh()
 					element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
 				except:
-					continue
+					try:
+						sp.browser.refresh()
+						time.sleep(2)
+						element = WebDriverWait(sp.browser, 20).until(EC.presence_of_element_located((By.CSS_SELECTOR, "[title^='Page suivante']")))
+					except:
+						continue
 			try:
 				time.sleep(2)
 				click_element=sp.browser.find_element_by_css_selector("[title^='Page suivante']")
