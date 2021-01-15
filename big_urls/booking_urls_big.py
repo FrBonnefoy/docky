@@ -306,10 +306,10 @@ def searchcityurl(x):
 			lecture=description.now()
 
 			if len(lecture)>0:
-    			max_pages=[]
-    			for page in lecture:
-        			max_pages.append(int(re.findall(r'(\d+)',page.text)[0]))
-        			max_page=max(max_pages)
+				max_pages=[]
+				for page in lecture:
+					max_pages.append(int(re.findall(r'(\d+)',page.text)[0]))
+					max_page=max(max_pages)
 				if max_page>1:
 					for counter_refresh in range(5):
 						try:
