@@ -25,4 +25,4 @@ mkdir /home/azureuser/apache/tensorflow
 mkdir /home/azureuser/apache/booking_info
 mkdir /home/azureuser/apache/booking_big_url
 #echo 'Finished installation'
-
+sudo docker run -dit --name booking_big --network host --memory="4g" --memory-swap="6g" --cpus="2.5" --shm-size="4g" -v /home/azureuser/docky/big_urls:/Bookinfo  booking
