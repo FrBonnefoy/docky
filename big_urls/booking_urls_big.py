@@ -159,9 +159,9 @@ continue_=input('\nContinue?\n')
 #Import flag_urls
 
 cwd = os.getcwd()
-url_folder=str(cwd)+r"\urls"
-read_files_flag = glob.glob(url_folder+r"\booking_flag_url1*")
-with open(url_folder+r'\booking_flag_url.txt','w') as fconsolidated:
+url_folder=str(cwd)+r"/urls"
+read_files_flag = glob.glob(url_folder+r"/booking_flag_url1*")
+with open(url_folder+r'/booking_flag_url.txt','w') as fconsolidated:
 	for file in read_files_flag:
 		with open(file) as f:
 			flags=f.readlines()
@@ -170,7 +170,7 @@ with open(url_folder+r'\booking_flag_url.txt','w') as fconsolidated:
 			for url in flags:
 				print(url, file=fconsolidated)
 
-with open(url_folder+r'\booking_flag_url.txt','r') as fconsolidated:
+with open(url_folder+r'/booking_flag_url.txt','r') as fconsolidated:
 	url_a_city=fconsolidated.readlines()
 
 url_a_city=list(map(lambda x: x.strip(),url_a_city))
