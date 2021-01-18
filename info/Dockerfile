@@ -14,7 +14,7 @@ RUN apt-get update \
         && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
 	
 WORKDIR /Bookinfo
-
+COPY initbook.sh /Bookinfo/
 
 ENV VIRTUAL_ENV=/opt/bookinfo
 RUN python3 -m venv $VIRTUAL_ENV
