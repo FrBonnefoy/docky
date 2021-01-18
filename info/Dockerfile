@@ -28,7 +28,7 @@ RUN pip3 install beautifulsoup4 \
 	&& pip3 install tqdm\
 	&& pip3 install psutil
 
-RUN chmod +x initbook.sh \
+RUN chmod +x /Bookinfo/initbook.sh \
         && cp initbook.sh /usr/local/bin
 
 CMD /usr/local/bin/initbook.sh  
