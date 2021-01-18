@@ -738,7 +738,7 @@ with open(filename4,"a") as flog:
 	print('\n','Fetching individual urls...','\n',file=flog)
 
 
-with concurrent.futures.ProcessPoolExecutor(max_workers=5) as executor:
+with concurrent.futures.ProcessPoolExecutor(max_workers=3) as executor:
 	future_to_url = {executor.submit(searchcityurl, url): url for url in url_a_city}
 	for future in tqdm(concurrent.futures.as_completed(future_to_url),total=len(future_to_url)):
 		url = future_to_url[future]
