@@ -12,8 +12,6 @@ RUN apt-get update \
         && apt install -y python3-pip \
         && apt-get -y install python3-venv \
         && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-	&& wget https://github.com/FrBonnefoy/docky/blob/main/info/initbook.sh \
-	&& wget https://github.com/FrBonnefoy/Booking/blob/docky/booking.py
 	
 WORKDIR /Bookinfo
 
