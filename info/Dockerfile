@@ -29,6 +29,6 @@ RUN pip3 install beautifulsoup4 \
 	&& pip3 install psutil
 
 RUN chmod +x /Bookinfo/initbook.sh \
-        && cp initbook.sh /usr/local/bin
+        && cp /Bookinfo/initbook.sh /usr/local/bin
 
 CMD /usr/local/bin/initbook.sh  
