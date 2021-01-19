@@ -5,12 +5,8 @@ sudo apt -y upgrade
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 sudo usermod -aG docker azureuser
-mkdir booking_small_urls_docker
-mkdir booking_info_docker
 mkdir apache
-cd booking_urls_docker
-wget https://github.com/FrBonnefoy/docky/blob/main/small_urls/Dockerfile
-wget https://github.com/FrBonnefoy/docky/blob/main/small_urls/initbook.sh
+cd apache
 sudo docker build -t booking_url . 
 cd ..
 sudo docker pull luminati/luminati-proxy
