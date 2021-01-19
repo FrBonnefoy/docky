@@ -16,4 +16,5 @@ sudo docker run -d -p 80:80/tcp -v /home/azureuser/apache:/usr/local/apache2/htd
 sudo docker pull jupyter/datascience-notebook
 sudo docker pull jupyter/tensorflow-notebook
 #echo 'Finished installation'
+sudo docker run -it -v "$PWD":/home/jovyan/work --network host --cpus="1.0" -e GRANT_SUDO=yes --user root jupyter/datascience-notebook
 sudo docker run -dit --name booking_big --network host --memory="4g" --memory-swap="6g" --cpus="2.5" --shm-size="4g" -v /home/azureuser/docky/big_urls:/Bookinfo  booking
