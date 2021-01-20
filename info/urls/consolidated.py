@@ -20,5 +20,3 @@ done_urls=list(dict.fromkeys(done_urls))
 with open("booking_url.txt", "w") as outfile:
     for url in done_urls:
         outfile.write(url)
-except:
-    pass
