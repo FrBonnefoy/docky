@@ -3,12 +3,13 @@ import glob
 # Consolidate url file
 
 read_files = glob.glob("booking_done_url*")
-    with open("consolidatedurls.txt", "wb") as outfile:
-        for f in read_files:
-            with open(f, "rb") as infile:
-                outfile.write(infile.read())
+with open("consolidatedurls.txt", "wb") as outfile:
+    for f in read_files:
+        with open(f, "rb") as infile:
+            outfile.write(infile.read())
 
-    #Import logs
+    
+#Import logs
 
 flogname='consolidatedurls.txt'
 with open(flogname) as flogdone:
