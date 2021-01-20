@@ -106,7 +106,7 @@ def bookcrawl(url):
     #Generate address variable
     address = book_soup.findAll("span", {"class":"hp_address_subtitle"})
     try:
-        cleanaddress = address[0].text.strip()
+        cleanaddress = address[0].text.strip().replace('\n','').replace('\t','')
     except:
         cleanaddress = ""
     #Generate stars variable
