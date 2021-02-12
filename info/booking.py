@@ -77,6 +77,8 @@ with open(cflogname) as flogdone:
 
 done_urls=list(filter(lambda x: 'page is completed' in x , done_urls))
 done_urls=list(map(lambda x: re.findall(r"'(.+)'",x)[0],done_urls))
+url_hotel=list(map(lambda x: x.strip(),url_hotel))
+done_urls=list(map(lambda x: x.strip(),done_urls))
 url_hotel=list(set(urls)-set(done_urls))
 url_hotel=sorted(url_hotel)
 url_hotel=list(map(lambda x: x.strip(),url_hotel))
